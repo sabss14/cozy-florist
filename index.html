@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6d7e5">
+<title>Cozy Florist — Gremio</title>
+<style>
+:root{--bg:#fff8f2;--panel:#fffdfb;--ink:#5c3d3d;--muted:#8c6f6f;--accent:#c87996;--accent2:#ead1a0;--line:#eadbd3;--ok:#6f9d78;--wait:#9b8b9b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#fffdf9,#fff4ee);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
+header{padding:22px 16px 16px;text-align:center;background:linear-gradient(#fffaf6,#f9e6df);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+h1{margin:0;font-size:28px}.sub{color:var(--muted);font-size:13px;margin-top:4px}
+nav{display:flex;gap:7px;overflow:auto;padding:10px 12px;background:#fff;position:sticky;top:87px;z-index:4;border-bottom:1px solid var(--line)}
+nav button{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:20px;padding:9px 13px;color:var(--ink);cursor:pointer}
+nav button.active{background:var(--accent);color:white;border-color:var(--accent)}
+main{max-width:1150px;margin:auto;padding:18px 14px 50px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+input,select{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:white;color:var(--ink)}
+button.primary,button.danger,button.small{border:0;border-radius:10px;padding:9px 12px;cursor:pointer}
+button.primary{background:var(--accent);color:white}button.danger{background:#b95f68;color:white}button.small{background:#f3e7e2;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 4px 16px #7b4b3a12}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.stat{padding:14px;border-radius:16px;background:white;border:1px solid var(--line);text-align:center}.stat b{display:block;font-size:24px}
+.flower-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.flower{background:#fff8d9;border:1px solid #ead8a9;border-radius:13px;padding:9px;text-align:center;min-height:105px}.flower.off{opacity:.28;filter:grayscale(.5)}.emoji{font-size:38px}.flower-name{font-size:12px;font-weight:650}
+.mission{display:flex;flex-direction:column;gap:8px}.mission-top{display:flex;justify-content:space-between;align-items:center}.slot{font-weight:800}.points{font-weight:800;color:#a56b35}.status{font-size:12px;padding:4px 8px;border-radius:10px;background:#edf5ed;color:#47714f;display:inline-block}.status.waiting{background:#f0ebf0;color:#746474}.eligible{font-size:13px;color:var(--muted)}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.notice{padding:12px;border-radius:12px;background:#fff2d9;border:1px solid #ead4a5;margin-bottom:12px}.hidden{display:none!important}
+.adminbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}.checks{max-height:260px;overflow:auto;border:1px solid var(--line);padding:8px;border-radius:12px}.checks label{display:block;padding:5px}
+dialog{border:0;border-radius:20px;padding:0;max-width:720px;width:94%;box-shadow:0 20px 70px #0003}dialog::backdrop{background:#3c292966}.modal{padding:20px}.close{float:right}
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.flower-grid{grid-template-columns:repeat(4,1fr)}nav{top:82px}}
+</style>
+</head>
+<body>
+<header><h1>🌸 Cozy Florist</h1><div class="sub">Gremio · tablero y colecciones</div></header>
+<nav id="nav">
+<button data-page="home">Inicio</button><button data-page="players">Jugadoras</button><button data-page="missions">Misiones</button><button data-page="flowers">Flores</button><button data-page="admin">Administración</button>
+</nav>
+<main id="app"></main>
+<dialog id="dlg"><div class="modal" id="dlgbody"></div></dialog>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+/* =========================================================
+   PEGA AQUÍ TUS DOS DATOS DE SUPABASE.
+   NO pongas aquí la secret/service_role key.
+   ========================================================= */
+const SUPABASE_URL = "PEGA_AQUI_TU_PROJECT_URL";
+const SUPABASE_KEY = "PEGA_AQUI_TU_PUBLISHABLE_O_ANON_KEY";
+
+const configured = !SUPABASE_URL.startsWith("PEGA_AQUI") && !SUPABASE_KEY.startsWith("PEGA_AQUI");
+const supabase = configured ? createClient(SUPABASE_URL,SUPABASE_KEY) : null;
+let page="home", state={players:[],flowers:[],owns:[],missions:[]}, session=null;
+
+const $=s=>document.querySelector(s);
+function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function fmt(ms){if(ms<=0)return "Lista para nueva misión";let s=Math.floor(ms/1000),h=Math.floor(s/3600);s%=3600;let m=Math.floor(s/60),ss=s%60;return `${h?String(h).padStart(2,"0")+":":""}${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`}
+function flower(id){return state.flowers.find(x=>x.id===id)}
+function player(id){return state.players.find(x=>x.id===id)}
+function has(pid,fid){return state.owns.some(x=>x.player_id===pid&&x.flower_id===fid)}
+function eligible(fid){return state.players.filter(p=>p.active&&has(p.id,fid))}
+function setPage(p){page=p;document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===p));render()}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>setPage(b.dataset.page));
+
+async function load(){
+ if(!configured){render();return}
+ const [p,f,o,m]=await Promise.all([
+   supabase.from("players").select("*").order("id"),
+   supabase.from("flowers").select("*").order("id"),
+   supabase.from("player_flowers").select("*"),
+   supabase.from("missions").select("*").order("slot_number")
+ ]);
+ if(p.error||f.error||o.error||m.error){$("#app").innerHTML=`<div class="notice"><b>Error leyendo Supabase.</b><br>${esc((p.error||f.error||o.error||m.error).message)}</div>`;return}
+ state={players:p.data||[],flowers:f.data||[],owns:o.data||[],missions:m.data||[]};
+ render();
+}
+function render(){
+ if(!configured){$("#app").innerHTML=`<div class="notice"><b>Falta conectar Supabase.</b><br>Abre este archivo con un editor, sustituye las dos líneas <b>SUPABASE_URL</b> y <b>SUPABASE_KEY</b> por los datos de tu proyecto y vuelve a cargarlo.</div>`;return}
+ if(page==="home")home(); if(page==="players")playersPage(); if(page==="missions")missionsPage(); if(page==="flowers")flowersPage(); if(page==="admin")adminPage();
+}
+function home(){
+ const active=state.missions.filter(m=>m.status==="active").length;
+ $("#app").innerHTML=`<div class="card"><h2>🌷 Bienvenidas al gremio</h2><p>Consulta las misiones actuales y mira qué jugadoras tienen la flor necesaria.</p></div>
+ <div class="stats"><div class="stat"><b>${state.players.filter(p=>p.active).length}</b>Jugadoras</div><div class="stat"><b>${state.flowers.filter(f=>f.active).length}</b>Flores activas</div><div class="stat"><b>${active}</b>Misiones activas</div></div>
+ <div class="toolbar"><button class="primary" onclick="window.go('missions')">🎯 Ver misiones</button><button class="small" onclick="window.go('players')">👩 Ver jugadoras</button></div>`;
+}
+function playersPage(){
+ $("#app").innerHTML=`<div class="toolbar"><input id="search" placeholder="Buscar jugadora..." oninput="window.filterPlayers()"></div><div id="playergrid" class="grid"></div>`;
+ drawPlayers(state.players);
+}
+function drawPlayers(arr){
+ $("#playergrid").innerHTML=arr.filter(p=>p.active).map(p=>{let fs=state.flowers.filter(f=>f.active&&has(p.id,f.id));let can=state.missions.filter(m=>m.status==="active"&&m.flower_id&&has(p.id,m.flower_id)).length;
+ return `<div class="card"><div class="row"><h3>👩 ${esc(p.name)}</h3><span>${can} misión(es)</span></div><p class="sub">${fs.length} flores en colección</p><div class="flower-grid">${fs.map(f=>`<div class="flower"><div class="emoji">${esc(f.emoji||"🌸")}</div><div class="flower-name">${esc(f.name)}</div></div>`).join("")||"<p>Sin flores registradas.</p>"}</div></div>`}).join("");
+}
+window.filterPlayers=()=>{let q=$("#search").value.toLowerCase();drawPlayers(state.players.filter(p=>p.name.toLowerCase().includes(q)))};
+function missionsPage(){
+ $("#app").innerHTML=`<div class="toolbar"><input id="msearch" placeholder="Buscar flor..." oninput="window.filterMissions()"><select id="mstatus" onchange="window.filterMissions()"><option value="">Todos los estados</option><option value="active">Activas</option><option value="waiting">Esperando</option><option value="expired">Expiradas</option><option value="completed">Completadas</option></select></div><div id="missiongrid" class="grid"></div>`;
+ drawMissions(state.missions);
+}
+function missionCard(m){
+ const f=flower(m.flower_id), els=f?eligible(f.id):[], rem=m.replacement_at?new Date(m.replacement_at).getTime()-Date.now():0;
+ let st=m.status==="active"?`<span class="status">Disponible</span>`:`<span class="status waiting">${m.status==="expired"?"Esperando nueva":"Esperando"}</span>`;
+ return `<div class="card mission"><div class="mission-top"><span class="slot">#${m.slot_number}</span><span class="points">${m.points||0} pts</span></div>
+ <div class="flower"><div class="emoji">${esc(f?.emoji||"🌸")}</div><div class="flower-name">${esc(f?.name||"Sin flor asignada")}</div></div>${st}
+ ${m.status==="active"?`<div class="eligible">👩 ${els.length} jugadora(s) pueden hacerla</div><button class="small" onclick="window.showEligible(${m.slot_number})">Ver quiénes</button>`:""} 
+ ${m.status!=="active"&&m.replacement_at?`<div class="eligible">⏱️ ${fmt(rem)}</div>`:""}</div>`;
+}
+function drawMissions(arr){$("#missiongrid").innerHTML=arr.map(missionCard).join("")}
+window.filterMissions=()=>{let q=$("#msearch").value.toLowerCase(),s=$("#mstatus").value;drawMissions(state.missions.filter(m=>(!s||m.status===s)&&(!q||(flower(m.flower_id)?.name||"").toLowerCase().includes(q))))};
+window.showEligible=(slot)=>{let m=state.missions.find(x=>x.slot_number===slot),f=flower(m.flower_id),els=f?eligible(f.id):[];openDlg(`<button class="close" onclick="closeDlg()">✕</button><h2>Misión #${slot}</h2><p><b>${esc(f?.name||"Sin flor")}</b></p>${els.length?`<ul>${els.map(p=>`<li>${esc(p.name)}</li>`).join("")}</ul>`:"<p>Ninguna jugadora tiene esta flor registrada.</p>"}`)}
+function flowersPage(){
+ $("#app").innerHTML=`<div class="toolbar"><input id="fsearch" placeholder="Buscar flor..." oninput="window.filterFlowers()"></div><div id="flowergrid" class="grid"></div>`;
+ drawFlowers(state.flowers.filter(f=>f.active));
+}
+function drawFlowers(arr){$("#flowergrid").innerHTML=arr.map(f=>{let n=state.players.filter(p=>p.active&&has(p.id,f.id)).length;return `<div class="card"><div class="flower"><div class="emoji">${esc(f.emoji||"🌸")}</div><div class="flower-name">${esc(f.name)}</div></div><p>La tienen <b>${n}</b> jugadora(s).</p></div>`}).join("")}
+window.filterFlowers=()=>{let q=$("#fsearch").value.toLowerCase();drawFlowers(state.flowers.filter(f=>f.active&&f.name.toLowerCase().includes(q)))};
+
+function adminPage(){
+ if(!session){$("#app").innerHTML=`<div class="adminbox"><h2>🔐 Administración</h2><p>Solo la administradora puede entrar aquí.</p><input id="email" type="email" placeholder="Correo"><br><br><input id="pass" type="password" placeholder="Contraseña"><br><br><button class="primary" onclick="window.login()">Entrar</button></div>`;return}
+ $("#app").innerHTML=`<div class="notice"><b>🔐 Modo administración</b> — cambios visibles para todas las personas que consulten la página.</div>
+ <div class="toolbar"><button class="primary" onclick="window.addPlayer()">+ Jugadora</button><button class="primary" onclick="window.addFlower()">+ Flor</button><button class="primary" onclick="window.editMissions()">🎯 Editar misiones</button><button class="small" onclick="window.logout()">Cerrar sesión</button></div>
+ <div class="grid"><div class="card"><h3>👩 Jugadoras</h3>${state.players.map(p=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(p.name)}</span><button class="small" onclick="window.editPlayer(${p.id})">Editar colección</button></div>`).join("")}</div>
+ <div class="card"><h3>🌸 Flores</h3>${state.flowers.map(f=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(f.emoji||"🌸")} ${esc(f.name)}</span><button class="small" onclick="window.renameFlower(${f.id})">Renombrar</button></div>`).join("")}</div></div>`;
+}
+window.login=async()=>{let {data,error}=await supabase.auth.signInWithPassword({email:$("#email").value,password:$("#pass").value});if(error)return alert(error.message);session=data.session;setPage("admin")};
+window.logout=async()=>{await supabase.auth.signOut();session=null;setPage("home")};
+window.addPlayer=async()=>{let n=prompt("Nombre de la jugadora:");if(!n)return;let {error}=await supabase.from("players").insert({name:n.trim(),active:true});if(error)alert(error.message);await load()};
+window.addFlower=async()=>{let n=prompt("Nombre de la flor:");if(!n)return;let {error}=await supabase.from("flowers").insert({name:n.trim(),emoji:"🌸",active:true});if(error)alert(error.message);await load()};
+window.editPlayer=async(id)=>{
+ let p=player(id);let html=`<button class="close" onclick="closeDlg()">✕</button><h2>🌸 ${esc(p.name)}</h2><p>Marca las flores que tiene. La cantidad no importa.</p><div class="checks">${state.flowers.map(f=>`<label><input type="checkbox" data-f="${f.id}" ${has(id,f.id)?"checked":""}> ${esc(f.emoji||"🌸")} ${esc(f.name)}</label>`).join("")}</div><br><button class="primary" onclick="window.saveCollection(${id})">Guardar colección</button>`;openDlg(html)
+};
+window.saveCollection=async(id)=>{
+ let selected=[...document.querySelectorAll("#dlgbody input[data-f]:checked")].map(x=>Number(x.dataset.f));
+ let current=state.owns.filter(x=>x.player_id===id);
+ let del=current.filter(x=>!selected.includes(x.flower_id)).map(x=>x.flower_id), add=selected.filter(fid=>!current.some(x=>x.flower_id===fid));
+ if(del.length){let {error}=await supabase.from("player_flowers").delete().eq("player_id",id).in("flower_id",del);if(error)return alert(error.message)}
+ if(add.length){let {error}=await supabase.from("player_flowers").insert(add.map(fid=>({player_id:id,flower_id:fid})));if(error)return alert(error.message)}
+ closeDlg();await load()
+};
+window.renameFlower=async(id)=>{let f=flower(id),n=prompt("Nuevo nombre:",f.name);if(!n||n===f.name)return;let {error}=await supabase.from("flowers").update({name:n.trim()}).eq("id",id);if(error)alert(error.message);await load()};
+window.editMissions=()=>{openDlg(`<button class="close" onclick="closeDlg()">✕</button><h2>🎯 Editar una misión</h2><p>Elige una posición. Cada posición es independiente.</p><select id="mslot">${state.missions.map(m=>`<option value="${m.slot_number}">#${m.slot_number}</option>`).join("")}</select><br><br><select id="mflower"><option value="">Sin flor</option>${state.flowers.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join("")}</select><br><br><input id="mpoints" type="number" min="0" placeholder="Puntos"><br><br><select id="mstate"><option value="active">Activa</option><option value="waiting">Esperando</option><option value="expired">Expirada</option><option value="completed">Completada</option></select><br><br><button class="primary" onclick="window.saveMission()">Guardar</button>`);$("#mslot").onchange=window.fillMission;window.fillMission()}
+window.fillMission=()=>{let m=state.missions.find(x=>x.slot_number===Number($("#mslot").value));$("#mflower").value=m?.flower_id||"";$("#mpoints").value=m?.points||0;$("#mstate").value=m?.status||"waiting"};
+window.saveMission=async()=>{let slot=Number($("#mslot").value),m=state.missions.find(x=>x.slot_number===slot),status=$("#mstate").value,fid=$("#mflower").value?Number($("#mflower").value):null;
+ let patch={flower_id:fid,points:Number($("#mpoints").value)||0,status};
+ if(status==="expired"){patch.waiting_started_at=new Date().toISOString();patch.replacement_at=new Date(Date.now()+90*60*1000).toISOString()}
+ if(status==="waiting"&&m.status!=="waiting"){patch.waiting_started_at=new Date().toISOString();patch.replacement_at=new Date(Date.now()+90*60*1000).toISOString()}
+ if(status==="active"){patch.waiting_started_at=null;patch.replacement_at=null;patch.completed_by=null;patch.completed_at=null}
+ let {error}=await supabase.from("missions").update(patch).eq("slot_number",slot);if(error)alert(error.message);else{closeDlg();await load()}};
+function openDlg(x){$("#dlgbody").innerHTML=x;$("#dlg").showModal()}function closeDlg(){$("#dlg").close()}window.closeDlg=closeDlg;
+window.go=setPage;
+supabase?.auth.getSession().then(({data})=>{session=data.session;load()});
+if(supabase){supabase.channel("cozy-live").on("postgres_changes",{event:"*",schema:"public",table:"players"},load).on("postgres_changes",{event:"*",schema:"public",table:"flowers"},load).on("postgres_changes",{event:"*",schema:"public",table:"player_flowers"},load).on("postgres_changes",{event:"*",schema:"public",table:"missions"},load).subscribe()}
+setInterval(()=>{if(page==="missions")drawMissions(state.missions)},1000);
+</script>
+</body>
+</html>
