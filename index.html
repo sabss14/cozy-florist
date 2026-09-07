@@ -42,7 +42,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
    NO pongas aquí la secret/service_role key.
    ========================================================= */
 const SUPABASE_URL = "https://dykvyixivccgzwzvghyx.supabase.co";
-const SUPABASE_KEY = "dykvyixivccgzwzvghyx";
+const SUPABASE_KEY = "sb_publishable_IvegPNXIuaQhi43TbS8AWQ_PwH5SD9G";
 
 const configured = !SUPABASE_URL.startsWith("PEGA_AQUI") && !SUPABASE_KEY.startsWith("PEGA_AQUI");
 const supabase = configured ? createClient(SUPABASE_URL,SUPABASE_KEY) : null;
