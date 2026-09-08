@@ -19,19 +19,12 @@ button.primary,button.danger,button.small{border:0;border-radius:10px;padding:9p
 button.primary{background:var(--accent);color:white}button.danger{background:#b95f68;color:white}button.small{background:#f3e7e2;color:var(--ink)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 4px 16px #7b4b3a12}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.stat{padding:14px;border-radius:16px;background:white;border:1px solid var(--line);text-align:center}.stat b{display:block;font-size:24px}
-.flower-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.flower{background:#fff8d9;border:1px solid #ead8a9;border-radius:13px;padding:9px;text-align:center;min-height:105px}.flower.off{opacity:.28;filter:grayscale(.5)}.emoji{font-size:38px}.flower-name{font-size:12px;font-weight:650}
+.flower-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.flower{background:#fff8d9;border:1px solid #ead8a9;border-radius:13px;padding:9px;text-align:center;min-height:105px}.flower.off{opacity:.28;filter:grayscale(.5)}.emoji{font-size:38px}.flower-img{width:72px;height:72px;object-fit:cover;border-radius:14px;display:block;margin:0 auto 5px;border:1px solid #ead8a9;background:#fff}.flower-placeholder{width:72px;height:72px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;background:#fff;border:1px dashed #d8c3ad;color:#a58b7b;font-size:11px}.flower-name{font-size:12px;font-weight:650}
 .mission{display:flex;flex-direction:column;gap:8px}.mission-top{display:flex;justify-content:space-between;align-items:center}.slot{font-weight:800}.points{font-weight:800;color:#a56b35}.status{font-size:12px;padding:4px 8px;border-radius:10px;background:#edf5ed;color:#47714f;display:inline-block}.status.waiting{background:#f0ebf0;color:#746474}.eligible{font-size:13px;color:var(--muted)}
 .row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.notice{padding:12px;border-radius:12px;background:#fff2d9;border:1px solid #ead4a5;margin-bottom:12px}.hidden{display:none!important}
 .adminbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}.checks{max-height:260px;overflow:auto;border:1px solid var(--line);padding:8px;border-radius:12px}.checks label{display:block;padding:5px}
 dialog{border:0;border-radius:20px;padding:0;max-width:720px;width:94%;box-shadow:0 20px 70px #0003}dialog::backdrop{background:#3c292966}.modal{padding:20px}.close{float:right}
-@media(max-width:600px){.stats{grid-template-columns:1fr 1fr;}
-
-  .flower-grid{grid-template-columns:repeat(4,1fr);}
-
-  .grid{grid-template-columns:repeat(3,1fr);
-    gap:6px;}
-
-  nav{top:82px;}
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.flower-grid{grid-template-columns:repeat(4,1fr)}nav{top:82px}}
 </style>
 </head>
 <body>
@@ -48,8 +41,8 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
    PEGA AQUÍ TUS DOS DATOS DE SUPABASE.
    NO pongas aquí la secret/service_role key.
    ========================================================= */
-const SUPABASE_URL = "https://dykvyixivccgzwzvghyx.supabase.co";
-const SUPABASE_KEY = "sb_publishable_IvegPNXIuaQhi43TbS8AWQ_PwH5SD9G";
+const SUPABASE_URL = "PEGA_AQUI_TU_PROJECT_URL";
+const SUPABASE_KEY = "PEGA_AQUI_TU_PUBLISHABLE_O_ANON_KEY";
 
 const configured = !SUPABASE_URL.startsWith("PEGA_AQUI") && !SUPABASE_KEY.startsWith("PEGA_AQUI");
 const supabase = configured ? createClient(SUPABASE_URL,SUPABASE_KEY) : null;
@@ -59,6 +52,7 @@ const $=s=>document.querySelector(s);
 function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 function fmt(ms){if(ms<=0)return "Lista para nueva misión";let s=Math.floor(ms/1000),h=Math.floor(s/3600);s%=3600;let m=Math.floor(s/60),ss=s%60;return `${h?String(h).padStart(2,"0")+":":""}${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`}
 function flower(id){return state.flowers.find(x=>x.id===id)}
+function flowerVisual(f){return f?.image_url?`<img class="flower-img" src="${esc(f.image_url)}" alt="${esc(f.name)}" loading="lazy">`:`<div class="flower-placeholder">Sin foto</div>`}
 function player(id){return state.players.find(x=>x.id===id)}
 function has(pid,fid){return state.owns.some(x=>x.player_id===pid&&x.flower_id===fid)}
 function eligible(fid){return state.players.filter(p=>p.active&&has(p.id,fid))}
@@ -93,7 +87,7 @@ function playersPage(){
 }
 function drawPlayers(arr){
  $("#playergrid").innerHTML=arr.filter(p=>p.active).map(p=>{let fs=state.flowers.filter(f=>f.active&&has(p.id,f.id));let can=state.missions.filter(m=>m.status==="active"&&m.flower_id&&has(p.id,m.flower_id)).length;
- return `<div class="card"><div class="row"><h3>👩 ${esc(p.name)}</h3><span>${can} misión(es)</span></div><p class="sub">${fs.length} flores en colección</p><div class="flower-grid">${fs.map(f=>`<div class="flower"><div class="emoji">${esc(f.emoji||"🌸")}</div><div class="flower-name">${esc(f.name)}</div></div>`).join("")||"<p>Sin flores registradas.</p>"}</div></div>`}).join("");
+ return `<div class="card"><div class="row"><h3>👩 ${esc(p.name)}</h3><span>${can} misión(es)</span></div><p class="sub">${fs.length} flores en colección</p><div class="flower-grid">${fs.map(f=>`<div class="flower">${flowerVisual(f)}<div class="flower-name">${esc(f.name)}</div></div>`).join("")||"<p>Sin flores registradas.</p>"}</div></div>`}).join("");
 }
 window.filterPlayers=()=>{let q=$("#search").value.toLowerCase();drawPlayers(state.players.filter(p=>p.name.toLowerCase().includes(q)))};
 function missionsPage(){
@@ -115,22 +109,22 @@ function flowersPage(){
  $("#app").innerHTML=`<div class="toolbar"><input id="fsearch" placeholder="Buscar flor..." oninput="window.filterFlowers()"></div><div id="flowergrid" class="grid"></div>`;
  drawFlowers(state.flowers.filter(f=>f.active));
 }
-function drawFlowers(arr){$("#flowergrid").innerHTML=arr.map(f=>{let n=state.players.filter(p=>p.active&&has(p.id,f.id)).length;return `<div class="card"><div class="flower"><div class="emoji">${esc(f.emoji||"🌸")}</div><div class="flower-name">${esc(f.name)}</div></div><p>La tienen <b>${n}</b> jugadora(s).</p></div>`}).join("")}
+function drawFlowers(arr){$("#flowergrid").innerHTML=arr.map(f=>{let n=state.players.filter(p=>p.active&&has(p.id,f.id)).length;return `<div class="card"><div class="flower">${flowerVisual(f)}<div class="flower-name">${esc(f.name)}</div></div><p>La tienen <b>${n}</b> jugadora(s).</p></div>`}).join("")}
 window.filterFlowers=()=>{let q=$("#fsearch").value.toLowerCase();drawFlowers(state.flowers.filter(f=>f.active&&f.name.toLowerCase().includes(q)))};
 
 function adminPage(){
  if(!session){$("#app").innerHTML=`<div class="adminbox"><h2>🔐 Administración</h2><p>Solo la administradora puede entrar aquí.</p><input id="email" type="email" placeholder="Correo"><br><br><input id="pass" type="password" placeholder="Contraseña"><br><br><button class="primary" onclick="window.login()">Entrar</button></div>`;return}
- $("#app").innerHTML=`<div class="notice"><b>🔐 Modo administración</b> — cambios visibles para todas las personas que consulten la página.</div>
+ $("#app").innerHTML=`<div class="notice"><b>🔐 Modo administración</b> — cambios visibles para todas las personas que consulten la página.</div><input id="flowerFile" type="file" accept="image/png,image/jpeg,image/webp" style="display:none">
  <div class="toolbar"><button class="primary" onclick="window.addPlayer()">+ Jugadora</button><button class="primary" onclick="window.addFlower()">+ Flor</button><button class="primary" onclick="window.editMissions()">🎯 Editar misiones</button><button class="small" onclick="window.logout()">Cerrar sesión</button></div>
  <div class="grid"><div class="card"><h3>👩 Jugadoras</h3>${state.players.map(p=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(p.name)}</span><button class="small" onclick="window.editPlayer(${p.id})">Editar colección</button></div>`).join("")}</div>
- <div class="card"><h3>🌸 Flores</h3>${state.flowers.map(f=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(f.emoji||"🌸")} ${esc(f.name)}</span><button class="small" onclick="window.renameFlower(${f.id})">Renombrar</button></div>`).join("")}</div></div>`;
+ <div class="card"><h3>🌸 Flores</h3>${state.flowers.map(f=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span style="display:flex;align-items:center;gap:8px">${f.image_url?`<img src="${esc(f.image_url)}" alt="" style="width:42px;height:42px;object-fit:cover;border-radius:10px">`:`<span style="font-size:26px">🌸</span>`}<span>${esc(f.name)}</span></span><span><button class="small" onclick="window.uploadFlowerImage(${f.id})">📷 Foto</button> <button class="small" onclick="window.renameFlower(${f.id})">Renombrar</button></span></div>`).join("")}</div></div>`;
 }
 window.login=async()=>{let {data,error}=await supabase.auth.signInWithPassword({email:$("#email").value,password:$("#pass").value});if(error)return alert(error.message);session=data.session;setPage("admin")};
 window.logout=async()=>{await supabase.auth.signOut();session=null;setPage("home")};
 window.addPlayer=async()=>{let n=prompt("Nombre de la jugadora:");if(!n)return;let {error}=await supabase.from("players").insert({name:n.trim(),active:true});if(error)alert(error.message);await load()};
 window.addFlower=async()=>{let n=prompt("Nombre de la flor:");if(!n)return;let {error}=await supabase.from("flowers").insert({name:n.trim(),emoji:"🌸",active:true});if(error)alert(error.message);await load()};
 window.editPlayer=async(id)=>{
- let p=player(id);let html=`<button class="close" onclick="closeDlg()">✕</button><h2>🌸 ${esc(p.name)}</h2><p>Marca las flores que tiene. La cantidad no importa.</p><div class="checks">${state.flowers.map(f=>`<label><input type="checkbox" data-f="${f.id}" ${has(id,f.id)?"checked":""}> ${esc(f.emoji||"🌸")} ${esc(f.name)}</label>`).join("")}</div><br><button class="primary" onclick="window.saveCollection(${id})">Guardar colección</button>`;openDlg(html)
+ let p=player(id);let html=`<button class="close" onclick="closeDlg()">✕</button><h2>🌸 ${esc(p.name)}</h2><p>Marca las flores que tiene. La cantidad no importa.</p><div class="checks">${state.flowers.map(f=>`<label><input type="checkbox" data-f="${f.id}" ${has(id,f.id)?"checked":""}> ${f.image_url?`<img src="${esc(f.image_url)}" style="width:28px;height:28px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:5px">`:esc(f.emoji||"🌸")} ${esc(f.name)}</label>`).join("")}</div><br><button class="primary" onclick="window.saveCollection(${id})">Guardar colección</button>`;openDlg(html)
 };
 window.saveCollection=async(id)=>{
  let selected=[...document.querySelectorAll("#dlgbody input[data-f]:checked")].map(x=>Number(x.dataset.f));
@@ -139,6 +133,24 @@ window.saveCollection=async(id)=>{
  if(del.length){let {error}=await supabase.from("player_flowers").delete().eq("player_id",id).in("flower_id",del);if(error)return alert(error.message)}
  if(add.length){let {error}=await supabase.from("player_flowers").insert(add.map(fid=>({player_id:id,flower_id:fid})));if(error)return alert(error.message)}
  closeDlg();await load()
+};
+window.uploadFlowerImage=async(id)=>{
+ const f=flower(id); if(!f)return;
+ const input=$("#flowerFile"); if(!input)return;
+ input.value="";
+ input.onchange=async()=>{
+  const file=input.files?.[0]; if(!file)return;
+  if(file.size>5*1024*1024)return alert("La imagen pesa más de 5 MB. Elige una imagen más pequeña.");
+  const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
+  const path=`flower-${id}-${Date.now()}.${ext}`;
+  const {error:upError}=await supabase.storage.from("flowers").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+  if(upError)return alert("No se pudo subir la foto: "+upError.message);
+  const {data}=supabase.storage.from("flowers").getPublicUrl(path);
+  const {error:dbError}=await supabase.from("flowers").update({image_url:data.publicUrl}).eq("id",id);
+  if(dbError)return alert("La foto se subió, pero no se pudo guardar en la flor: "+dbError.message);
+  await load(); alert("Foto guardada para "+f.name+".");
+ };
+ input.click();
 };
 window.renameFlower=async(id)=>{let f=flower(id),n=prompt("Nuevo nombre:",f.name);if(!n||n===f.name)return;let {error}=await supabase.from("flowers").update({name:n.trim()}).eq("id",id);if(error)alert(error.message);await load()};
 window.editMissions=()=>{openDlg(`<button class="close" onclick="closeDlg()">✕</button><h2>🎯 Editar una misión</h2><p>Elige una posición. Cada posición es independiente.</p><select id="mslot">${state.missions.map(m=>`<option value="${m.slot_number}">#${m.slot_number}</option>`).join("")}</select><br><br><select id="mflower"><option value="">Sin flor</option>${state.flowers.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join("")}</select><br><br><input id="mpoints" type="number" min="0" placeholder="Puntos"><br><br><select id="mstate"><option value="active">Activa</option><option value="waiting">Esperando</option><option value="expired">Expirada</option><option value="completed">Completada</option></select><br><br><button class="primary" onclick="window.saveMission()">Guardar</button>`);$("#mslot").onchange=window.fillMission;window.fillMission()}
