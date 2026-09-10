@@ -25,7 +25,48 @@ box-sizing:border-box;overflow:hidden;background:#fff8d9;border:1px solid #ead8a
 .row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.notice{padding:12px;border-radius:12px;background:#fff2d9;border:1px solid #ead4a5;margin-bottom:12px}.hidden{display:none!important}
 .adminbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}.checks{max-height:260px;overflow:auto;border:1px solid var(--line);padding:8px;border-radius:12px}.checks label{display:block;padding:5px}
 dialog{border:0;border-radius:20px;padding:0;max-width:720px;width:94%;box-shadow:0 20px 70px #0003}dialog::backdrop{background:#3c292966}.modal{padding:20px}.close{float:right}
-@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.flower-grid{grid-template-columns:repeat(4,1fr)}nav{top:82px}}
+@media(max-width:600px){
+  .stats{grid-template-columns:1fr 1fr}
+  .flower-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #missiongrid,
+  #flowergrid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:6px;
+  }
+  #missiongrid .card,
+  #flowergrid .card{
+    min-width:0;
+    padding:8px;
+    border-radius:14px;
+  }
+  #missiongrid .flower,
+  #flowergrid .flower{
+    padding:5px;
+    min-width:0;
+  }
+  #missiongrid .flower-img,
+  #flowergrid .flower-img,
+  #missiongrid .flower-placeholder,
+  #flowergrid .flower-placeholder{
+    width:100%;
+    max-width:72px;
+    height:auto;
+    aspect-ratio:1;
+  }
+  #missiongrid .flower-name,
+  #flowergrid .flower-name{
+    font-size:11px;
+    overflow-wrap:anywhere;
+  }
+  #missiongrid .eligible{
+    font-size:10px;
+  }
+  #missiongrid button{
+    padding:6px 7px;
+    font-size:10px;
+  }
+  nav{top:82px}
+}
 </style>
 </head>
 <body>
