@@ -71,7 +71,7 @@ dialog{border:0;border-radius:20px;padding:0;max-width:720px;width:94%;box-shado
 </style>
 </head>
 <body>
-<header><h1>🌸 Cozy Florist</h1><div class="sub">Gremio · tablero y colecciones</div></header>
+<header><h1>🐭⚔️ MoskeRats </h1><div class="sub">Gremio · tablero y colecciones</div></header>
 <nav id="nav">
 <button data-page="home">Inicio</button><button data-page="players">Jugadoras</button><button data-page="missions">Misiones</button><button data-page="flowers">Flores</button><button data-page="admin">Administración</button>
 </nav>
@@ -139,10 +139,10 @@ function home(){
    return `<div class="category-card ${c.cls}"><div class="category-ring" style="--progress:${cp*3.6}deg"><div class="category-value">${cp}%</div></div><div class="category-name">${c.icon} ${c.name}</div><div class="category-count">${got}/${fs.length}</div></div>`;
  }).join("");
  const uncategorized=activeFlowers.filter(f=>!f.category).length;
- $("#app").innerHTML=`<div class="card"><h2>🌷 Bienvenidas al gremio</h2><p>Consulta las misiones actuales y mira el progreso de la colección del gremio.</p></div>
+ $("#app").innerHTML=`<div class="card"><h2>🌻🖤 Bienvenidas al gremio</h2><p>Consulta las misiones actuales y mira el progreso de la colección del gremio.</p></div>
  <div class="stats">
-  <div class="stat"><div class="stat-icon">👩‍👩‍👧‍👧</div><b>${activePlayers.length}</b><span>Jugadoras</span></div>
-  <div class="stat"><div class="stat-icon">🌸</div><b>${total}</b><span>Tipos de flores</span></div>
+  <div class="stat"><div class="stat-icon">🐭</div><b>${activePlayers.length}</b><span>Jugadoras</span></div>
+  <div class="stat"><div class="stat-icon">🌻</div><b>${total}</b><span>Tipos de flores</span></div>
   <div class="stat"><div class="stat-icon">📈</div><b>${owned}</b><span>Flores del gremio</span></div>
   <div class="stat"><div class="stat-icon">⚠️</div><b>${missing}</b><span>Faltan</span></div>
  </div>
@@ -190,14 +190,14 @@ function adminPage(){
  $("#app").innerHTML=`<div class="notice"><b>🔐 Modo administración</b> — cambios visibles para todas las personas que consulten la página.</div><input id="flowerFile" type="file" accept="image/png,image/jpeg,image/webp" style="display:none">
  <div class="toolbar"><button class="primary" onclick="window.addPlayer()">+ Jugadora</button><button class="primary" onclick="window.addFlower()">+ Flor</button><button class="primary" onclick="window.editMissions()">🎯 Editar misiones</button><button class="small" onclick="window.logout()">Cerrar sesión</button></div>
  <div class="grid"><div class="card"><h3>👩 Jugadoras</h3>${state.players.map(p=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(p.name)}</span><button class="small" onclick="window.editPlayer(${p.id})">Editar colección</button></div>`).join("")}</div>
- <div class="card"><h3>🌸 Flores</h3><p class="sub">Asigna cada flor a una de las 5 categorías para que las estadísticas se calculen correctamente.</p>${state.flowers.map(f=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span style="display:flex;align-items:center;gap:8px;min-width:0">${f.image_url?`<img src="${esc(f.image_url)}" alt="" style="width:42px;height:42px;object-fit:cover;border-radius:10px">`:`<span style="font-size:26px">🌸</span>`}<span style="min-width:0">${esc(f.name)}<br><select onchange="window.setFlowerCategory(${f.id},this.value)" style="margin-top:5px;padding:6px 8px;font-size:12px"><option value="">Sin categoría</option><option value="roja" ${f.category==="roja"?"selected":""}>🔴 Roja</option><option value="naranja" ${f.category==="naranja"?"selected":""}>🟠 Naranja</option><option value="morada" ${f.category==="morada"?"selected":""}>🟣 Morada</option><option value="azul" ${f.category==="azul"?"selected":""}>🔵 Azul</option><option value="verde" ${f.category==="verde"?"selected":""}>🟢 Verde</option></select></span></span><span><button class="small" onclick="window.uploadFlowerImage(${f.id})">📷 Foto</button> <button class="small" onclick="window.renameFlower(${f.id})">Renombrar</button></span></div>`).join("")}</div></div>`;
+ <div class="card"><h3>🌻 Flores</h3><p class="sub">Asigna cada flor a una de las 5 categorías para que las estadísticas se calculen correctamente.</p>${state.flowers.map(f=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span style="display:flex;align-items:center;gap:8px;min-width:0">${f.image_url?`<img src="${esc(f.image_url)}" alt="" style="width:42px;height:42px;object-fit:cover;border-radius:10px">`:`<span style="font-size:26px">🌸</span>`}<span style="min-width:0">${esc(f.name)}<br><select onchange="window.setFlowerCategory(${f.id},this.value)" style="margin-top:5px;padding:6px 8px;font-size:12px"><option value="">Sin categoría</option><option value="roja" ${f.category==="roja"?"selected":""}>🔴 Roja</option><option value="naranja" ${f.category==="naranja"?"selected":""}>🟠 Naranja</option><option value="morada" ${f.category==="morada"?"selected":""}>🟣 Morada</option><option value="azul" ${f.category==="azul"?"selected":""}>🔵 Azul</option><option value="verde" ${f.category==="verde"?"selected":""}>🟢 Verde</option></select></span></span><span><button class="small" onclick="window.uploadFlowerImage(${f.id})">📷 Foto</button> <button class="small" onclick="window.renameFlower(${f.id})">Renombrar</button></span></div>`).join("")}</div></div>`;
 }
 window.login=async()=>{let {data,error}=await supabase.auth.signInWithPassword({email:$("#email").value,password:$("#pass").value});if(error)return alert(error.message);session=data.session;setPage("admin")};
 window.logout=async()=>{await supabase.auth.signOut();session=null;setPage("home")};
 window.addPlayer=async()=>{let n=prompt("Nombre de la jugadora:");if(!n)return;let {error}=await supabase.from("players").insert({name:n.trim(),active:true});if(error)alert(error.message);await load()};
 window.addFlower=async()=>{let n=prompt("Nombre de la flor:");if(!n)return;let {error}=await supabase.from("flowers").insert({name:n.trim(),emoji:"🌸",active:true});if(error)alert(error.message);await load()};
 window.editPlayer=async(id)=>{
- let p=player(id);let html=`<button class="close" onclick="closeDlg()">✕</button><h2>🌸 ${esc(p.name)}</h2><p>Marca las flores que tiene. La cantidad no importa.</p><div class="checks">${state.flowers.map(f=>`<label><input type="checkbox" data-f="${f.id}" ${has(id,f.id)?"checked":""}> ${f.image_url?`<img src="${esc(f.image_url)}" style="width:28px;height:28px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:5px">`:esc(f.emoji||"🌸")} ${esc(f.name)}</label>`).join("")}</div><br><button class="primary" onclick="window.saveCollection(${id})">Guardar colección</button>`;openDlg(html)
+ let p=player(id);let html=`<button class="close" onclick="closeDlg()">✕</button><h2>🌹 ${esc(p.name)}</h2><p>Marca las flores que tiene. La cantidad no importa.</p><div class="checks">${state.flowers.map(f=>`<label><input type="checkbox" data-f="${f.id}" ${has(id,f.id)?"checked":""}> ${f.image_url?`<img src="${esc(f.image_url)}" style="width:28px;height:28px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:5px">`:esc(f.emoji||"🌸")} ${esc(f.name)}</label>`).join("")}</div><br><button class="primary" onclick="window.saveCollection(${id})">Guardar colección</button>`;openDlg(html)
 };
 window.saveCollection=async(id)=>{
  let selected=[...document.querySelectorAll("#dlgbody input[data-f]:checked")].map(x=>Number(x.dataset.f));
