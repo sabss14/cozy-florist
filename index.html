@@ -128,7 +128,7 @@ function missionCard(m){
  const f=flower(m.flower_id), els=f?eligible(f.id):[], rem=m.replacement_at?new Date(m.replacement_at).getTime()-Date.now():0;
  let st=m.status==="active"?`<span class="status">Disponible</span>`:`<span class="status waiting">${m.status==="expired"?"Esperando nueva":"Esperando"}</span>`;
  return `<div class="card mission"><div class="mission-top"><span class="slot">#${m.slot_number}</span><span class="points">${m.points||0} pts</span></div>
- <div class="flower"><div class="emoji">${esc(f?.emoji||"🌸")}</div><div class="flower-name">${esc(f?.name||"Sin flor asignada")}</div></div>${st}
+ <div class="flower">${flowerVisual(f)}<div class="flower-name">${esc(f?.name||"Sin flor asignada")}</div></div>${st}
  ${m.status==="active"?`<div class="eligible">👩 ${els.length} jugadora(s) pueden hacerla</div><button class="small" onclick="window.showEligible(${m.slot_number})">Ver quiénes</button>`:""} 
  ${m.status!=="active"&&m.replacement_at?`<div class="eligible">⏱️ ${fmt(rem)}</div>`:""}</div>`;
 }
