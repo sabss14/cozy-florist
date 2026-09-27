@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f6d7e5">
-<title>Cozy Florist — Gremio</title>
+<title>🐭⚔️ Cozy Florist</title>
 <style>
 :root{--bg:#F8F6FF;--panel:#FFFFFF;--ink:#3F3A52;--muted:#6F6A80;--accent:#B983FF;--accent2:#94DAFF;--line:#D9D4FF;--ok:#94B3FD;--wait:#9A91B3}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#ffffff,#F7F3FF);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
@@ -188,8 +188,9 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
    PEGA AQUÍ TUS DOS DATOS DE SUPABASE.
    NO pongas aquí la secret/service_role key.
    ========================================================= */
-const SUPABASE_URL = "PRIVADO";
-const SUPABASE_KEY = "PRIVADO";
+const SUPABASE_URL = "https://dykvyixivccgzwzvghyx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_IvegPNXIuaQhi43TbS8AWQ_PwH5SD9G";
+
 
 const configured = !SUPABASE_URL.startsWith("PEGA_AQUI") && !SUPABASE_KEY.startsWith("PEGA_AQUI");
 const supabase = configured ? createClient(SUPABASE_URL,SUPABASE_KEY) : null;
