@@ -365,7 +365,7 @@ function playersPage(){
 }
 function drawPlayers(arr){
  $("#playergrid").innerHTML=arr.filter(p=>p.active).map(p=>{let fs=state.flowers.filter(f=>f.active&&has(p.id,f.id));let can=state.missions.filter(m=>(m.status==="active"||m.status==="in_progress")&&m.flower_id&&has(p.id,m.flower_id)).length;
- const playerFlowerEmojis=["🌷","🌺","🌻","🌼","🌹","🪻","💐","🍀","🖤","🩷","❤️","🧡","💛","💚","🩵","💙","💜"];
+ const playerFlowerEmojis=["🌷","🖤","🌺","🌻","🌼","🌹","🪻","💐","🍀","🩷","❤️","🧡","💛","💚","🩵","💙","💜"];
  const flowerEmoji=playerFlowerEmojis[p.id%playerFlowerEmojis.length];
  return `<div class="card"><div class="player-head"><h3 class="player-name">${flowerEmoji} ${esc(p.name)}</h3><span class="player-mission-badge"><b>${can}</b> misión(es) disponibles</span></div><p class="sub">${fs.length} flores en colección</p><div class="flower-grid player-flower-grid">${fs.map(f=>`<div class="flower">${flowerVisual(f)}<div class="flower-name">${esc(f.name)}</div></div>`).join("")||"<p>Sin flores registradas.</p>"}</div></div>`}).join("");
 }
@@ -415,7 +415,7 @@ function drawFlowers(arr){
  if(uncategorized.length){
    html+=`<section class="flower-category-section">
      <div class="flower-category-title">
-       <div class="category-title-main"><span>🌸</span><span>Sin categoría</span></div>
+       <div class="category-title-main"><span>🌻</span><span>Sin categoría</span></div>
        <div class="category-title-meta">${uncategorized.length} flores</div>
      </div>
      <div class="grid">${uncategorized.map(f=>{let n=activePlayers.filter(p=>has(p.id,f.id)).length;return `<div class="card"><div class="flower">${flowerVisual(f)}<div class="flower-name">${esc(f.name)}</div></div><p>La tienen <b>${n}</b> jugadora(s).</p></div>`}).join("")}</div>
@@ -429,7 +429,7 @@ function adminPage(){
  if(!session){$("#app").innerHTML=`<div class="adminbox"><h2>🔐 Administración</h2><p>Solo la administradora puede entrar aquí.</p><input id="email" type="email" placeholder="Correo"><br><br><input id="pass" type="password" placeholder="Contraseña"><br><br><button class="primary" onclick="window.login()">Entrar</button></div>`;return}
  $("#app").innerHTML=`<div class="notice"><b>🔐 Modo administración</b> — cambios visibles para todas las personas que consulten la página.</div><input id="flowerFile" type="file" accept="image/png,image/jpeg,image/webp" style="display:none">
  <div class="toolbar"><button class="primary" onclick="window.addPlayer()">+ Jugadora</button><button class="primary" onclick="window.addFlower()">+ Flor</button><button class="primary" onclick="window.editMissions()">🎯 Editar misiones</button><button class="primary" onclick="window.openWeeklyStats()">📊 Estadísticas semanales</button><button class="small" onclick="window.logout()">Cerrar sesión</button></div>
- <div class="admin-layout"><div class="card admin-players-card"><h3>👩 Jugadoras</h3>${state.players.map(p=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(p.name)}</span><button class="small" onclick="window.editPlayer(${p.id})">Editar colección</button></div>`).join("")}</div>
+ <div class="admin-layout"><div class="card admin-players-card"><h3>👸🏻 Jugadoras</h3>${state.players.map(p=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(p.name)}</span><button class="small" onclick="window.editPlayer(${p.id})">Editar colección</button></div>`).join("")}</div>
  <div class="card admin-flowers-card"><h3>🌻 Flores</h3><p class="sub">Asigna cada flor a una de las 5 categorías para que las estadísticas se calculen correctamente.</p><div class="admin-flower-grid">${state.flowers.map(f=>`<div class="admin-flower-card"><div class="admin-flower-head">${f.image_url?`<img src="${esc(f.image_url)}" alt="" loading="lazy">`:`<span style="width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px dashed #CBB7C8;font-size:26px;flex:0 0 auto">🌸</span>`}<span class="admin-flower-name">${esc(f.name)}</span></div><select onchange="window.setFlowerCategory(${f.id},this.value)"><option value="">Sin categoría</option><option value="roja" ${f.category==="roja"?"selected":""}>🔴 Roja</option><option value="naranja" ${f.category==="naranja"?"selected":""}>🟠 Naranja</option><option value="morada" ${f.category==="morada"?"selected":""}>🟣 Morada</option><option value="azul" ${f.category==="azul"?"selected":""}>🔵 Azul</option><option value="verde" ${f.category==="verde"?"selected":""}>🟢 Verde</option></select><div class="admin-flower-actions"><button class="small" onclick="window.uploadFlowerImage(${f.id})">📷 Foto</button><button class="small" onclick="window.renameFlower(${f.id})">Renombrar</button></div></div>`).join("")}</div></div></div>`;
 }
 window.login=async()=>{let {data,error}=await supabase.auth.signInWithPassword({email:$("#email").value,password:$("#pass").value});if(error)return alert(error.message);session=data.session;setPage("admin")};
@@ -505,7 +505,7 @@ function weeklyHomeHtml(){
    const missions=Number(r.missions_done)||0,max=Number(r.max_points)||0,remaining=Math.max(0,24-missions);
    return sum+(remaining*(max/24));
  },0);
- const playerEmojis=["🌸","🌷","🌺","🌻","🌼","🌹","🪻","💐","🌱","🍀","🌿","🌼","🌸","🌷","🌺"];
+ const playerEmojis=["🌷","🌺","🌻","🌼","🌹","🪻","💐","🌱","🍀","🌿"];
  const table=rows.map((r,i)=>{
    const cls=Number(r.missions_done)>=24?'maximum':Number(r.missions_done)>=18?'obligatory':'';
    const emoji=playerEmojis[i%playerEmojis.length];
