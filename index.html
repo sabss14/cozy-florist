@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6d7e5">
+<title>Cozy Florist — Gremio</title>
+<style>
+:root{--bg:#FAF7F5;--panel:#FFFFFF;--ink:#4A4450;--muted:#7B737C;--accent:#B8899E;--accent2:#D8C7E8;--line:#E9DFE5;--ok:#A9C7B0;--wait:#B9AEB7}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#ffffff,#FFF8F0);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
+header{padding:22px 16px 16px;text-align:center;background:linear-gradient(90deg,#E8D9DE,#E3D9E9,#D9E5DC);border-bottom:1px solid #DCCFD6;position:sticky;top:0;z-index:5}
+h1{margin:0;font-size:28px;color:#fff;text-shadow:0 1px 2px rgba(40,90,85,.18)}.sub{color:var(--muted);font-size:13px;margin-top:4px}
+nav{display:flex;gap:7px;overflow:auto;padding:10px 12px;background:#fff;position:sticky;top:87px;z-index:4;border-bottom:1px solid var(--line)}
+nav button{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:20px;padding:9px 13px;color:var(--ink);cursor:pointer}
+nav button.active{background:var(--accent);color:white;border-color:var(--accent)}
+main{max-width:1150px;margin:auto;padding:18px 14px 50px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+input,select{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:white;color:var(--ink)}
+button.primary,button.danger,button.small{border:0;border-radius:10px;padding:9px 12px;cursor:pointer}
+button.primary{background:var(--accent);color:white}button.danger{background:#FF70AB;color:white}button.small{background:#FFF0D9;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 4px 16px #6E5AA212}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.stat{padding:16px;border-radius:18px;background:rgba(255,255,255,.95);border:1px solid var(--line);text-align:left;box-shadow:0 6px 22px rgba(56,92,88,.08)}.stat b{display:block;font-size:28px;color:#B983FF;line-height:1.1;margin:8px 0 4px}.stat span{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.stat-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#FFF3E5;font-size:19px}.collection-box{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 6px 22px rgba(56,92,88,.08);margin:14px 0}.collection-head{display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:800}.progress-wrap{display:flex;justify-content:center;align-items:center;padding:18px 0 12px}.progress-ring{width:128px;height:128px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#B983FF var(--progress),#F3E7FF 0);box-shadow:0 8px 28px rgba(85,207,192,.18);position:relative}.progress-ring:after{content:"";position:absolute;inset:13px;border-radius:50%;background:#fff}.progress-value{position:relative;z-index:1;text-align:center}.progress-value b{display:block;font-size:28px;color:#B983FF}.progress-value small{font-size:11px;color:var(--muted);font-weight:700}.category-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.category-card{padding:16px 10px;border-radius:18px;text-align:center;border:1px solid var(--line);box-shadow:0 4px 14px rgba(56,92,88,.06)}.category-card.red{background:#F3E9FF}.category-card.orange{background:#FFF3E5}.category-card.purple{background:#F3E9FF}.category-card.blue{background:#FFF0E8}.category-card.green{background:#F1FBE9}.category-ring{width:52px;height:52px;border-radius:50%;margin:0 auto 9px;background:conic-gradient(currentColor var(--progress),rgba(255,255,255,.8) 0);display:grid;place-items:center;position:relative}.category-ring:after{content:"";position:absolute;inset:8px;background:#fff;border-radius:50%}.category-card.red{color:#B983FF}.category-card.orange{color:#94DAFF}.category-card.purple{color:#B983FF}.category-card.blue{color:#FFAF61}.category-card.green{color:#B983FF}.category-value{position:relative;z-index:1;font-weight:900;font-size:13px}.category-name{font-weight:800;color:var(--ink);font-size:13px}.category-count{font-size:11px;color:var(--muted);margin-top:4px}.uncategorized-note{font-size:12px;color:var(--muted);margin-top:10px}
+.flower-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;width:100%}.flower{min-width:0;
+box-sizing:border-box;
+overflow:hidden;background:#FFE3EE;border:1px solid #FF70AB;border-radius:13px;padding:9px;text-align:center;min-height:105px}.flower.off{opacity:.28;filter:grayscale(.5)}.emoji{font-size:38px}.flower-img{width:92px;height:92px;object-fit:contain;border-radius:14px;display:block;margin:0 auto 5px;border:1px solid #E8D8FF;background:#fff}.player-card .flower{width:96px;height:96px;min-height:96px;padding:0;overflow:hidden;border-radius:14px}.player-card .flower-img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px}.flower-placeholder{width:72px;height:72px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;background:#fff;border:1px dashed #CBB7C8;color:#8A7180;font-size:11px}.flower-name{font-size:12px;font-weight:650}.player-flower-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.player-flower-grid .flower{min-width:0;min-height:0;height:auto;aspect-ratio:1/1;padding:5px;overflow:hidden;border-radius:12px}.player-flower-grid .flower-img{width:100%;height:100%;aspect-ratio:1/1;object-fit:contain!important;border-radius:10px;display:block}
+.mission{display:flex;flex-direction:column;gap:8px}.mission-top{display:flex;justify-content:space-between;align-items:center}.slot{font-weight:800}.points{font-weight:800;color:#B983FF}.status{font-size:12px;padding:4px 8px;border-radius:10px;background:#FFF0E8;color:#6D638A;display:inline-block}.status.inprogress{background:#B983FF;color:#fff;font-weight:800}.status.waiting{background:#F7EEF5;color:#8A7180}.eligible{font-size:13px;color:var(--muted)}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.notice{padding:12px;border-radius:12px;background:#F3E9FF;border:1px solid #E8C8FF;margin-bottom:12px}.hidden{display:none!important}
+.adminbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}.checks{max-height:420px;overflow:auto;border:1px solid var(--line);padding:10px;border-radius:12px}
+.collection-search{width:100%;margin-bottom:10px}
+.collection-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.collection-flower{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--line);border-radius:12px;background:#FFF8F2;min-width:0;cursor:pointer}
+.collection-flower:hover{background:#FFF3E5}
+.collection-flower input{flex:0 0 auto}
+.collection-flower img,.collection-flower .collection-emoji{width:42px;height:42px;object-fit:contain;border-radius:9px;background:#fff;flex:0 0 auto}
+.collection-flower .collection-name{font-size:12px;font-weight:700;line-height:1.15;overflow-wrap:anywhere}
+
+main:has(.mission-editor-board){max-width:none}
+.player-head{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.player-name{color:#B983FF;margin:0;font-size:17px}
+.player-mission-badge{align-self:flex-start}
+.flower-category-section{margin:16px 0 22px}
+.flower-category-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;padding:10px 14px;border-radius:16px;background:linear-gradient(90deg,#FFF0E8,#F3E9FF);border:1px solid var(--line)}
+.flower-category-title .category-title-main{display:flex;align-items:center;gap:8px;color:#B983FF;font-weight:900;font-size:16px}
+.flower-category-title .category-title-meta{color:var(--muted);font-size:11px;font-weight:800}
+.flower-category-section .grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.flower-category-section .card{min-width:0}
+.flower-category-section .flower{min-width:0}
+
+.player-mission-badge{display:inline-flex;align-items:center;justify-content:center;background:#94B3FD;color:#fff;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900;box-shadow:0 3px 10px rgba(55,185,171,.20)}
+.player-mission-badge b{font-size:14px;margin-right:3px}
+.player-flower-grid .flower-name{font-size:10px}
+.mission-editor-board{width:100%;margin-top:14px}
+.mission-editor-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mission-editor-head p{margin:0;color:var(--muted);font-size:13px}
+.mission-board-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.mission-edit-card{background:linear-gradient(145deg,#FFFFFF,#FFF8F2);border:1px solid var(--line);border-radius:17px;padding:9px;min-width:0;cursor:pointer;box-shadow:0 4px 14px rgba(56,92,88,.06);transition:.15s}
+.mission-edit-card:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(56,92,88,.10)}
+.mission-edit-card.selected{border:2px solid var(--accent);padding:8px;background:#F7EFFF}
+.mission-edit-slot{display:flex;justify-content:space-between;align-items:center;gap:5px;margin-bottom:7px}
+.mission-edit-slot b{font-size:12px}
+.mission-edit-flower{min-height:96px;background:#FFF3E5;border:1px solid #FFD6B5;border-radius:13px;padding:6px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.mission-edit-flower img{width:68px;height:68px;object-fit:contain;border-radius:11px;background:#fff;margin:0 auto 4px}
+.mission-edit-flower .mission-no-flower{width:68px;height:68px;margin:0 auto 4px;border-radius:11px;background:#fff;border:1px dashed #CBB7C8;display:flex;align-items:center;justify-content:center;font-size:24px}
+.mission-edit-name{font-size:10px;font-weight:750;line-height:1.15;overflow-wrap:anywhere}
+.mission-state-options{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px}
+.mission-state-option{display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 3px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:9px;font-weight:800;cursor:pointer}
+.mission-state-option input{appearance:none;width:13px;height:13px;border:1px solid #b9d8d3;border-radius:3px;background:#fff;margin:0;flex:0 0 auto}.mission-state-option input:checked{background:var(--accent);border-color:var(--accent);box-shadow:inset 0 0 0 3px #fff}
+.mission-state-option.inprogress{background:#F3E9FF;border-color:#C8A8F2}
+.mission-state-option.available{background:#FFF3E5}
+.mission-flower-picker{display:none;margin-top:8px;padding:8px;border-radius:12px;background:#fff;border:1px solid var(--line)}
+.mission-edit-card.selected .mission-flower-picker{display:block}
+.mission-flower-search{width:100%;padding:7px 8px;font-size:11px;margin-bottom:7px}
+.mission-flower-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;max-height:210px;overflow:auto}
+.mission-flower-option{border:1px solid var(--line);border-radius:9px;background:#FFF8F2;padding:4px;cursor:pointer;text-align:center;min-width:0}
+.mission-flower-option:hover{background:#FFF0E8}
+.mission-flower-option.selected{border:2px solid var(--accent);padding:3px;background:#F3E9FF}
+.mission-flower-option img,.mission-flower-option .mission-flower-emoji{width:36px;height:36px;object-fit:contain;border-radius:7px;background:#fff;display:block;margin:0 auto 3px}
+.mission-flower-option span{font-size:8px;font-weight:700;line-height:1.1;overflow-wrap:anywhere;display:block}
+.mission-save-bar{position:sticky;bottom:10px;z-index:3;margin-top:14px;padding:10px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.96);box-shadow:0 8px 24px rgba(56,92,88,.12);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.mission-save-bar span{font-size:12px;color:var(--muted)}
+@media(max-width:900px){.mission-board-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){
+  .mission-board-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .mission-edit-card{padding:7px;border-radius:14px}
+  .mission-edit-card.selected{padding:6px}
+  .mission-edit-flower{min-height:82px;padding:4px}
+  .mission-edit-flower img,.mission-edit-flower .mission-no-flower{width:54px;height:54px}
+  .mission-edit-name{font-size:9px}
+  .mission-state-options{grid-template-columns:1fr;gap:4px}
+  .mission-state-option{font-size:8px;padding:5px 2px}
+  .mission-flower-options{grid-template-columns:repeat(3,minmax(0,1fr));max-height:180px}
+  .mission-flower-option img,.mission-flower-option .mission-flower-emoji{width:30px;height:30px}
+}
+
+.admin-layout{display:grid;grid-template-columns:minmax(240px,25%) minmax(0,75%);gap:14px;align-items:start}.admin-players-card{min-width:0}.admin-flowers-card{min-width:0}.admin-flower-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.admin-flower-card{background:#FFF8F2;border:1px solid var(--line);border-radius:16px;padding:10px;min-width:0}.admin-flower-card .admin-flower-head{display:flex;align-items:center;gap:8px;min-width:0}.admin-flower-card .admin-flower-head img{width:52px;height:52px;object-fit:contain;background:#fff;border-radius:12px;border:1px solid #E8D8FF;flex:0 0 auto}.admin-flower-card .admin-flower-name{font-weight:750;font-size:13px;line-height:1.2;overflow-wrap:anywhere}.admin-flower-card select{width:100%;margin-top:8px}.admin-flower-card .admin-flower-actions{display:flex;gap:6px;margin-top:8px}.admin-flower-card .admin-flower-actions button{flex:1;min-width:0}
+dialog{border:0;border-radius:20px;padding:0;max-width:720px;width:94%;box-shadow:0 20px 70px #4A3B6B33}dialog::backdrop{background:#4A3B6B66}.modal{padding:20px}.close{float:right}
+@media(max-width:600px){
+  .stats{grid-template-columns:1fr 1fr}
+  .flower-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #missiongrid,
+  #flowergrid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:6px;
+  }
+  #missiongrid .card,
+  #flowergrid .card{
+    min-width:0;
+    padding:8px;
+    border-radius:14px;
+  }
+  #missiongrid .flower,
+  #flowergrid .flower{
+    padding:5px;
+    min-width:0;
+  }
+  #missiongrid .flower-img,
+  #flowergrid .flower-img,
+  #missiongrid .flower-placeholder,
+  #flowergrid .flower-placeholder{
+    width:100%;
+    max-width:72px;
+    height:auto;
+    aspect-ratio:1;
+  }
+  #missiongrid .flower-name,
+  #flowergrid .flower-name{
+    font-size:11px;
+    overflow-wrap:anywhere;
+  }
+  #missiongrid .eligible{
+    font-size:10px;
+  }
+  #missiongrid button{
+    padding:6px 7px;
+    font-size:10px;
+  }
+  .player-head{gap:5px}
+  .player-name{font-size:16px}
+  .flower-category-section{margin:12px 0 18px}
+  .flower-category-title{padding:8px 10px;border-radius:13px;align-items:flex-start}
+  .flower-category-title .category-title-main{font-size:14px}
+  .flower-category-title .category-title-meta{font-size:10px;text-align:right}
+  .flower-category-section .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .flower-category-section .card{padding:8px;border-radius:14px}
+  .admin-layout{grid-template-columns:1fr}.admin-flower-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .admin-flower-card{padding:8px}
+  .admin-flower-card .admin-flower-head img,
+  .admin-flower-card .admin-flower-head>span:first-child{width:46px;height:46px}
+  .admin-flower-card .admin-flower-name{font-size:12px}
+  .admin-flower-card .admin-flower-actions{flex-direction:column}
+  .player-flower-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.player-flower-grid .flower{padding:5px;min-width:0}.player-flower-grid .flower-img{width:100%;height:auto;aspect-ratio:1/1;object-fit:contain!important}
+  .collection-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.collection-flower{padding:6px}.collection-flower img,.collection-flower .collection-emoji{width:36px;height:36px}.collection-flower .collection-name{font-size:11px}
+  nav{top:82px}
+}
+
+.weekly-hero{background:linear-gradient(135deg,#FFF0E8,#F3E9FF);border:1px solid var(--line);border-radius:24px;padding:18px;margin:14px 0;box-shadow:0 7px 24px rgba(56,92,88,.08)}
+.weekly-hero-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.weekly-hero h2{margin:0;color:#B983FF}.weekly-hero p{margin:4px 0 0;color:var(--muted);font-size:12px}
+ .group-performance{background:linear-gradient(135deg,#F4FFE9,#FFF1E3 48%,#F4ECFF);border:1px solid #E7D9E8;border-radius:24px;padding:18px;margin:14px 0;box-shadow:0 8px 26px rgba(185,131,255,.10)}
+.group-performance-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.group-performance h2{margin:0;color:#B983FF}.group-performance p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.group-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.group-kpi{background:rgba(255,255,255,.88);border:1px solid #E9DDED;border-radius:17px;padding:13px;text-align:center}
+.group-kpi b{display:block;font-size:25px;color:#FF70AB}.group-kpi span{font-size:10px;text-transform:uppercase;font-weight:900;color:var(--muted)}
+.team-position{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:9px 14px;background:#FF70AB;color:#fff;font-weight:900;box-shadow:0 4px 12px rgba(255,112,171,.20)}
+.team-position b{font-size:18px}
+@media(max-width:900px){.group-kpis{grid-template-columns:repeat(2,1fr)}}
+.weekly-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}.weekly-kpi{background:#fff;border:1px solid var(--line);border-radius:17px;padding:13px;text-align:center}.weekly-kpi b{display:block;font-size:24px;color:#94B3FD}.weekly-kpi span{font-size:10px;text-transform:uppercase;font-weight:900;color:var(--muted)}
+.weekly-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:#fff}.weekly-table{width:100%;border-collapse:collapse;min-width:720px}.weekly-table th{background:#FFF3E5;color:#7A6675;font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:10px;text-align:left}.weekly-table td{padding:9px 10px;border-top:1px solid #e8f3f1;font-size:12px}.weekly-table .player-cell{font-weight:850;color:#B983FF;white-space:nowrap}.mission-count-badge{display:inline-flex;min-width:42px;justify-content:center;padding:6px 9px;border-radius:10px;font-weight:900;background:#F8F1F5}.mission-count-badge.obligatory{background:#94DAFF;color:#4A3D4F}.mission-count-badge.maximum{background:#C3FF93;color:#4A3D4F}.weekly-admin-table input{width:100px}.weekly-admin-table td:first-child{font-weight:800;color:#B983FF}.weekly-admin-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.week-selector{min-width:220px}.history-section{margin-top:16px}.history-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.history-card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:12px;min-width:0;text-align:center;box-shadow:0 5px 18px rgba(56,92,88,.07)}.history-card-head{display:flex;flex-direction:column;justify-content:center;gap:4px;align-items:center}.history-percent{font-size:25px;font-weight:950;color:#B983FF;line-height:1}.history-card.complete .history-percent{color:#94B3FD}.history-card.obligatory .history-percent{color:#94DAFF}.history-bar{height:8px;border-radius:99px;background:#F3E7FF;overflow:hidden;margin-top:10px}.history-bar>span{display:block;height:100%;background:linear-gradient(90deg,#C3FF93,#FFAF61,#FF70AB,#B983FF);border-radius:99px}.history-card.complete .history-bar>span{background:#94B3FD}.history-card.obligatory .history-bar>span{background:#94DAFF}.history-card .sub{font-size:10px;line-height:1.3;margin-top:8px}
+.weekly-potential{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.weekly-pill{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-size:11px;font-weight:850;color:#7A6675;box-shadow:0 3px 12px rgba(56,92,88,.06)}
+.weekly-pill b{font-size:15px;color:#B983FF}
+.weekly-pill.missions-left b{color:#94B3FD}
+.stat-input{font-size:12px;padding:8px 9px;border-radius:10px}
+@media(max-width:1100px){.history-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:700px){.history-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.history-card{padding:9px}.history-percent{font-size:21px}}
+@media(max-width:900px){
+  .weekly-kpis{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:600px){
+  .weekly-kpis{grid-template-columns:repeat(2,1fr)}
+  .weekly-hero{padding:13px}
+  .weekly-table th,.weekly-table td{padding:8px}
+  .weekly-admin-table input{width:78px}
+}
+.history-list{display:grid;gap:14px;margin-top:18px}.history-week{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 18px rgba(74,68,80,.05)}.history-week-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.history-week-head h2{margin:0 0 4px}.history-week-head p{margin:0;color:var(--muted)}.history-week-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}.history-mini{background:#FAF7F5;border:1px solid var(--line);border-radius:13px;padding:11px}.history-mini b{display:block;font-size:18px}.history-mini span{font-size:12px;color:var(--muted)}.history-toggle{margin-top:14px}.history-details{display:none;margin-top:14px;overflow:auto}.history-details.open{display:block}.history-details table{width:100%;border-collapse:collapse}.history-details th,.history-details td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.history-details th{font-size:12px;color:var(--muted)}@media(max-width:700px){.history-week-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>
+
+<style>
+/* v18 — diseño limpio: blanco/negro + lila pastel + naranja pastel */
+:root{--bg:#FFFFFF;--panel:#FFFFFF;--ink:#222222;--muted:#6F6F6F;--accent:#CDB7DD;--accent2:#F3C9A6;--line:#E7E3E8;--ok:#22C55E;--wait:#9A9A9A}
+body{background:#fff;color:var(--ink)}
+header{background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.03)}
+h1{color:#222;text-shadow:none}
+nav{background:#fff;border-bottom:1px solid var(--line)}
+nav button{background:#fff;color:#222;border-color:#DDD8E0}
+nav button.active{background:#E7DDF0;color:#222;border-color:#D2BEDF}
+button.primary{background:#CDB7DD;color:#222}button.danger{background:#F3C9A6;color:#222}button.small{background:#F3C9A6;color:#222}
+.card,.collection-box,.adminbox,.history-week,.history-card,.weekly-table-wrap{box-shadow:0 3px 14px rgba(0,0,0,.04);border-color:#E7E3E8}
+.stats .stat{box-shadow:0 3px 14px rgba(0,0,0,.04);background:#fff}
+.stat b,.progress-value b{color:#222}
+.stat-icon{background:#F7F2FA}
+.progress-ring{background:conic-gradient(#CDB7DD var(--progress),#F1ECF4 0);box-shadow:none}
+.category-card,.flower-category-title,.mission-edit-card,.mission-save-bar,.group-performance,.weekly-hero{box-shadow:none}
+.category-card.red,.category-card.orange,.category-card.purple,.category-card.blue,.category-card.green{background:#fff;color:#222}
+.category-card.orange .category-ring,.category-card.blue .category-ring{color:#F3C9A6}
+.category-card.red .category-ring,.category-card.purple .category-ring,.category-card.green .category-ring{color:#CDB7DD}
+.flower{background:#fff;border-color:#E5E0E7}
+.flower-img{border-color:#E7E3E8}
+.flower-placeholder{border-color:#D9D4DB;color:#777}
+.points,.player-name,.weekly-hero h2,.group-performance h2,.flower-category-title .category-title-main{color:#222}
+.status{background:#F8F8F8;color:#555}.status.inprogress{background:#E7DDF0;color:#333}.status.waiting{background:#F5F5F5;color:#777}
+.notice{background:#FFF7EF;border-color:#F1D7BF}
+.collection-flower{background:#fff}.collection-flower:hover,.mission-flower-option:hover{background:#FFF7EF}
+.player-mission-badge{background:#E7DDF0;color:#333;box-shadow:none}
+.flower-category-title{background:#fff}
+.mission-edit-card{background:#fff}.mission-edit-card.selected{background:#F8F4FA;border-color:#CDB7DD}
+.mission-edit-flower{background:#FFF7EF;border-color:#F0D6C0}
+.mission-state-option{background:#fff}.mission-state-option input:checked{background:#CDB7DD;border-color:#CDB7DD}
+.mission-state-option.inprogress{background:#F8F4FA;border-color:#D8C7E3}.mission-state-option.available{background:#FFF7EF}
+.mission-flower-picker,.mission-flower-option{background:#fff}.mission-flower-option.selected{border-color:#CDB7DD;background:#F8F4FA}
+.mission-save-bar{background:rgba(255,255,255,.97)}
+.weekly-hero,.group-performance{background:#fff;border-color:#E7E3E8}
+.group-kpi{background:#fff;border-color:#E7E3E8}.group-kpi b{color:#222}
+.team-position{background:#F3C9A6;color:#222;box-shadow:none}
+.weekly-table th{background:#F8F6F8;color:#555}.weekly-table td{border-top-color:#EEEAF0}.weekly-table .player-cell,.weekly-admin-table td:first-child{color:#222}
+/* Pastillas de cumplimiento: 18+ lila pastel y 24 verde clásico */
+.mission-count-badge{background:#F5F3F5;color:#555}
+.mission-count-badge.obligatory{background:#E2D3EB;color:#333}
+.mission-count-badge.maximum{background:#22C55E;color:#fff}
+.history-percent{color:#222}.history-card.complete .history-percent{color:#222}.history-card.obligatory .history-percent{color:#222}
+.history-bar{background:#F1ECF4}.history-bar>span{background:#CDB7DD}.history-card.complete .history-bar>span{background:#22C55E}.history-card.obligatory .history-bar>span{background:#E2D3EB}
+.weekly-pill{box-shadow:none;color:#555}.weekly-pill b,.weekly-pill.missions-left b{color:#222}
+.history-mini{background:#fff}
+</style>
+
+<style>
+/* v20 fixed: participation switches, ranking, category colors, aqua controls */
+button.primary,button.small{background:#A9E6D2;color:#173B35;border-color:#86D5BD}
+button.primary:hover,button.small:hover{background:#8FDEC6}
+button.danger{background:#FFD6E0;color:#6B2737;border-color:#F0B9C8}
+nav button.active{background:#E6D4FF;border-color:#C8A6F7}
+.weekly-rank{display:inline-block;min-width:22px}.weekly-row-inactive{opacity:.52}.weekly-row-inactive td:first-child{text-decoration:line-through}
+.switch{position:relative;display:inline-block;width:42px;height:24px}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;cursor:pointer;inset:0;background:#D8D8D8;border-radius:999px;transition:.18s}.slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.18s;box-shadow:0 1px 3px rgba(0,0,0,.18)}.switch input:checked+.slider{background:#72D8BE}.switch input:checked+.slider:before{transform:translateX(18px)}
+.category-card.red .category-ring{color:#F08B8B}.category-card.orange .category-ring{color:#F5B267}.category-card.purple .category-ring{color:#B983FF}.category-card.blue .category-ring{color:#78B9E8}.category-card.green .category-ring{color:#7ACB8A}
+.category-card.red{background:#FFF0F0}.category-card.orange{background:#FFF5E8}.category-card.purple{background:#F6EEFF}.category-card.blue{background:#EDF7FF}.category-card.green{background:#EFFAF0}
+.flower-category-bg-roja{background:#FFF0F0!important;border-color:#F3C2C2!important}.flower-category-bg-naranja{background:#FFF5E8!important;border-color:#F4D0A6!important}.flower-category-bg-morada{background:#F6EEFF!important;border-color:#D8C0F5!important}.flower-category-bg-azul{background:#EDF7FF!important;border-color:#BFDDF2!important}.flower-category-bg-verde{background:#EFFAF0!important;border-color:#BFE1C5!important}.flower-category-bg-none{background:#FAFAFA!important;border-color:#E5E5E5!important}
+.weekly-table .switch{vertical-align:middle}
+</style>
+</head>
+<body>
+<header><h1>🐭⚔️ MoskeRats </h1><div class="sub">Gremio · tablero y colecciones</div></header>
+<nav id="nav">
+<button data-page="home">Inicio</button><button data-page="history">📚 Historial</button><button data-page="players">Jugadoras</button><button data-page="missions">Misiones</button><button data-page="flowers">Flores</button><button data-page="admin">Administración</button>
+</nav>
+<main id="app"></main>
+<dialog id="dlg"><div class="modal" id="dlgbody"></div></dialog>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+/* =========================================================
+   PEGA AQUÍ TUS DOS DATOS DE SUPABASE.
+   NO pongas aquí la secret/service_role key.
+   ========================================================= */
+const SUPABASE_URL = "PRIVADO";
+const SUPABASE_KEY = "PRIVADO";
+
+const configured = !SUPABASE_URL.startsWith("PEGA_AQUI") && !SUPABASE_KEY.startsWith("PEGA_AQUI");
+const supabase = configured ? createClient(SUPABASE_URL,SUPABASE_KEY) : null;
+let page="home", state={players:[],flowers:[],owns:[],missions:[],weeks:[],weeklyStats:[]}, session=null;
+
+const $=s=>document.querySelector(s);
+function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function fmt(ms){if(ms<=0)return "Lista para nueva misión";let s=Math.floor(ms/1000),h=Math.floor(s/3600);s%=3600;let m=Math.floor(s/60),ss=s%60;return `${h?String(h).padStart(2,"0")+":":""}${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`}
+function flower(id){return state.flowers.find(x=>x.id===id)}
+function flowerVisual(f){return f?.image_url?`<img class="flower-img" src="${esc(f.image_url)}" alt="${esc(f.name)}" loading="lazy">`:`<div class="flower-placeholder">Sin foto</div>`}
+function player(id){return state.players.find(x=>x.id===id)}
+function has(pid,fid){return state.owns.some(x=>x.player_id===pid&&x.flower_id===fid)}
+function eligible(fid){return state.players.filter(p=>p.active&&has(p.id,fid))}
+function setPage(p){page=p;document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===p));render()}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>setPage(b.dataset.page));
+
+async function load(){
+ if(!configured){render();return}
+ const [p,f,o,m,w,ws]=await Promise.all([
+   supabase.from("players").select("*").order("id"),
+   supabase.from("flowers").select("*").order("id"),
+   supabase.from("player_flowers").select("*"),
+   supabase.from("missions").select("*").order("slot_number"),
+   supabase.from("competition_weeks").select("*").order("start_date",{ascending:false}),
+   supabase.from("weekly_player_stats").select("*")
+ ]);
+ if(p.error||f.error||o.error||m.error){$("#app").innerHTML=`<div class="notice"><b>Error leyendo Supabase.</b><br>${esc((p.error||f.error||o.error||m.error).message)}</div>`;return}
+ state={players:p.data||[],flowers:f.data||[],owns:o.data||[],missions:m.data||[],weeks:w.error?[]:(w.data||[]),weeklyStats:ws.error?[]:(ws.data||[])};
+ render();
+}
+function render(){
+ if(!configured){$("#app").innerHTML=`<div class="notice"><b>Falta conectar Supabase.</b><br>Abre este archivo con un editor, sustituye las dos líneas <b>SUPABASE_URL</b> y <b>SUPABASE_KEY</b> por los datos de tu proyecto y vuelve a cargarlo.</div>`;return}
+ if(page==="home")home(); if(page==="history"){$("#app").innerHTML=historyPage();} if(page==="players")playersPage(); if(page==="missions")missionsPage(); if(page==="flowers")flowersPage(); if(page==="admin")adminPage(); if(page==="missionEditor")missionEditor(); if(page==="weeklyStats")weeklyStatsPage();
+}
+function historyPage(){const weeks=state.weeks.slice().sort((a,b)=>new Date(b.start_date||0)-new Date(a.start_date||0));if(!weeks.length)return `<div class="card"><h2>📚 Historial de competencias</h2><p class="sub">Todavía no hay competencias registradas.</p></div>`;const blocks=weeks.map((w,i)=>{const rows=state.weeklyStats.filter(x=>Number(x.week_id)===Number(w.id)&&x.active!==false).map(r=>{const p=state.players.find(x=>Number(x.id)===Number(r.player_id));if(!p)return null;return {...r,player:p}}).filter(Boolean);const tm=rows.reduce((s,r)=>s+(Number(r.missions_done)||0),0),tp=rows.reduce((s,r)=>s+(Number(r.points_done)||0),0),tmax=rows.reduce((s,r)=>s+(Number(r.max_points)||0),0),pct=tmax?Math.min(100,tp/tmax*100):0;const table=rows.slice().sort((a,b)=>(Number(b.max_points)||0)-(Number(a.max_points)||0)).map(r=>`<tr><td>${weeklyRankEmoji(r.max_points)} ${esc(r.player.name)}</td><td>${Number(r.missions_done)||0}</td><td>${fmtNum(r.points_done)}</td><td>${fmtNum(r.max_points)}</td><td>${r.missions_done?fmtNum((Number(r.points_done)||0)/(Number(r.missions_done)||1)):'—'}</td></tr>`).join('');const id='historyDetails'+i;return `<article class="history-week"><div class="history-week-head"><div><h2>📅 ${esc(w.name||'Competencia semanal')}</h2><p>${esc(w.start_date||'')} → ${esc(w.end_date||'')}</p></div>${w.team_position?`<span class="team-position">🏅 Posición del equipo <b>#${esc(w.team_position)}</b></span>`:''}</div><div class="history-week-summary"><div class="history-mini"><b>${fmtNum(pct)}%</b><span>Rendimiento grupal</span></div><div class="history-mini"><b>${fmtNum(tp)}</b><span>Puntos hechos</span></div><div class="history-mini"><b>${fmtNum(tmax)}</b><span>Puntos máximos</span></div><div class="history-mini"><b>${tm}</b><span>Misiones hechas</span></div></div><div class="history-toggle"><button class="small" onclick="document.getElementById('${id}').classList.toggle('open')">👥 Ver estadísticas de jugadoras</button></div><div id="${id}" class="history-details"><table><thead><tr><th>Jugadora</th><th>Misiones</th><th>Puntos hechos</th><th>Puntos máximos</th><th>Promedio</th></tr></thead><tbody>${table}</tbody></table></div></article>`}).join('');return `<div class="card"><h1>📚 Historial de competencias</h1><p class="sub">Todas las estadísticas de las competencias anteriores, disponibles públicamente.</p></div><div class="history-list">${blocks}</div>`}
+function home(){
+ const activePlayers=state.players.filter(p=>p.active);
+ const activeFlowers=state.flowers.filter(f=>f.active);
+ const latestWeek=state.weeks.length?state.weeks[0]:null;
+ const activeMissions=state.missions.filter(m=>m.status==="active"||m.status==="in_progress").length;
+ const ownedFlowers=activeFlowers.filter(f=>activePlayers.some(p=>has(p.id,f.id)));
+ const total=activeFlowers.length, owned=ownedFlowers.length, missing=Math.max(0,total-owned);
+ const pct=total?Math.round(owned/total*100):0;
+ const cats=[
+  {key:"roja",name:"Roja",icon:"🔴",cls:"red"},{key:"naranja",name:"Naranja",icon:"🟠",cls:"orange"},
+  {key:"morada",name:"Morada",icon:"🟣",cls:"purple"},{key:"azul",name:"Azul",icon:"🔵",cls:"blue"},
+  {key:"verde",name:"Verde",icon:"🟢",cls:"green"}
+ ];
+ const catHtml=cats.map(c=>{
+   const fs=activeFlowers.filter(f=>f.category===c.key);
+   const got=fs.filter(f=>activePlayers.some(p=>has(p.id,f.id))).length;
+   const cp=fs.length?Math.round(got/fs.length*100):0;
+   return `<div class="category-card ${c.cls}"><div class="category-ring" style="--progress:${cp*3.6}deg"><div class="category-value">${cp}%</div></div><div class="category-name">${c.icon} ${c.name}</div><div class="category-count">${got}/${fs.length}</div></div>`;
+ }).join("");
+ const uncategorized=activeFlowers.filter(f=>!f.category).length;
+ $("#app").innerHTML=`<div class="card"><h2>🌸 Bienvenidas al gremio</h2><p>Resumen de la última competencia semanal, rendimiento de cada jugadora y progreso de la colección.</p></div>
+ ${weeklyHomeHtml()}
+ <section class="collection-box">
+  <div class="collection-head"><span>🌷 Progreso de colección</span><span>${owned}/${total} (${pct}%)</span></div>
+  <div class="progress-wrap"><div class="progress-ring" style="--progress:${pct*3.6}deg"><div class="progress-value"><b>${pct}%</b><small>Progreso general</small></div></div></div>
+  <div class="stats">
+   <div class="stat"><div class="stat-icon">🌸</div><b>${activePlayers.length}</b><span>Jugadoras</span></div>
+   <div class="stat"><div class="stat-icon">🌼</div><b>${total}</b><span>Tipos de flores</span></div>
+   <div class="stat"><div class="stat-icon">🌺</div><b>${owned}</b><span>Flores del gremio</span></div>
+   <div class="stat"><div class="stat-icon">🍃</div><b>${missing}</b><span>Faltan</span></div>
+  </div>
+  <div class="category-grid">${catHtml}</div>
+  ${uncategorized?`<div class="uncategorized-note">ℹ️ Hay ${uncategorized} flor(es) sin categoría. Asígnales una categoría desde Administración.</div>`:""}
+ </section>
+ <div class="toolbar"><button class="primary" onclick="window.go('missions')">🎯 Ver misiones</button><button class="small" onclick="window.go('players')">🌸 Ver jugadoras</button></div>`;
+}
+function playersPage(){
+ $("#app").innerHTML=`<div class="toolbar"><input id="search" placeholder="Buscar jugadora..." oninput="window.filterPlayers()"></div><div id="playergrid" class="grid"></div>`;
+ drawPlayers(state.players);
+}
+function drawPlayers(arr){
+ $("#playergrid").innerHTML=arr.filter(p=>p.active).map(p=>{let fs=state.flowers.filter(f=>f.active&&has(p.id,f.id));let can=state.missions.filter(m=>(m.status==="active"||m.status==="in_progress")&&m.flower_id&&has(p.id,m.flower_id)).length;
+ const playerFlowerEmojis=["🌷","🌸","🌺","🌻","🌼","🌹","🪻","💐","🌱","🍀"];
+ const flowerEmoji=playerFlowerEmojis[p.id%playerFlowerEmojis.length];
+ return `<div class="card"><div class="player-head"><h3 class="player-name">${flowerEmoji} ${esc(p.name)}</h3><span class="player-mission-badge"><b>${can}</b> misión(es) disponibles</span></div><p class="sub">${fs.length} flores en colección</p><div class="flower-grid player-flower-grid">${fs.map(f=>`<div class="flower">${flowerVisual(f)}<div class="flower-name">${esc(f.name)}</div></div>`).join("")||"<p>Sin flores registradas.</p>"}</div></div>`}).join("");
+}
+window.filterPlayers=()=>{let q=$("#search").value.toLowerCase();drawPlayers(state.players.filter(p=>p.name.toLowerCase().includes(q)))};
+function missionsPage(){
+ $("#app").innerHTML=`<div class="toolbar"><input id="msearch" placeholder="Buscar flor..." oninput="window.filterMissions()"><select id="mstatus" onchange="window.filterMissions()"><option value="">Todos</option><option value="active">Disponible</option><option value="in_progress">En curso</option></select></div><div id="missiongrid" class="grid"></div>`;
+ drawMissions(state.missions);
+}
+function missionCard(m){
+ const f=flower(m.flower_id), els=f?eligible(f.id):[], rem=m.replacement_at?new Date(m.replacement_at).getTime()-Date.now():0;
+ let st=m.status==="active"?`<span class="status">Disponible</span>`:m.status==="in_progress"?`<span class="status inprogress">En curso</span>`:`<span class="status waiting">${m.status==="expired"?"Esperando nueva":"Esperando"}</span>`;
+ return `<div class="card mission"><div class="mission-top"><span class="slot">#${m.slot_number}</span><span></span></div>
+ <div class="flower">${flowerVisual(f)}<div class="flower-name">${esc(f?.name||"Sin flor asignada")}</div></div>${st}
+ ${(m.status==="active"||m.status==="in_progress")?`<div class="eligible">👩 ${els.length} jugadora(s) pueden hacerla</div><button class="small" onclick="window.showEligible(${m.slot_number})">Ver quiénes</button>`:""} 
+ ${m.status!=="active"&&m.replacement_at?`<div class="eligible">⏱️ ${fmt(rem)}</div>`:""}</div>`;
+}
+function drawMissions(arr){$("#missiongrid").innerHTML=arr.map(missionCard).join("")}
+window.filterMissions=()=>{let q=$("#msearch").value.toLowerCase(),s=$("#mstatus").value;drawMissions(state.missions.filter(m=>(!s||m.status===s)&&(!q||(flower(m.flower_id)?.name||"").toLowerCase().includes(q))))};
+window.showEligible=(slot)=>{let m=state.missions.find(x=>x.slot_number===slot),f=flower(m.flower_id),els=f?eligible(f.id):[];openDlg(`<button class="close" onclick="closeDlg()">✕</button><h2>Misión #${slot}</h2><p><b>${esc(f?.name||"Sin flor")}</b></p>${els.length?`<ul>${els.map(p=>`<li>${esc(p.name)}</li>`).join("")}</ul>`:"<p>Ninguna jugadora tiene esta flor registrada.</p>"}`)}
+function flowersPage(){
+ $("#app").innerHTML=`<div class="toolbar"><input id="fsearch" placeholder="Buscar flor..." oninput="window.filterFlowers()"></div><div id="flowercategories"></div>`;
+ drawFlowers(state.flowers.filter(f=>f.active));
+}
+function drawFlowers(arr){
+ const cats=[
+  {key:"roja",name:"Rojas",icon:"🌹"},
+  {key:"naranja",name:"Naranjas",icon:"🍊"},
+  {key:"morada",name:"Moradas",icon:"💜"},
+  {key:"azul",name:"Azules",icon:"💙"},
+  {key:"verde",name:"Verdes",icon:"💚"}
+ ];
+ const activePlayers=state.players.filter(p=>p.active);
+ const normalized=x=>String(x||"").trim().toLowerCase();
+ let html=cats.map(c=>{
+   const fs=arr.filter(f=>normalized(f.category)===c.key);
+   if(!fs.length)return "";
+   const got=fs.filter(f=>activePlayers.some(p=>has(p.id,f.id))).length;
+   return `<section class="flower-category-section category-${c.key}">
+     <div class="flower-category-title">
+       <div class="category-title-main"><span>${c.icon}</span><span>Flores ${c.name}</span></div>
+       <div class="category-title-meta">${got} de ${fs.length} conseguidas</div>
+     </div>
+     <div class="grid">${fs.map(f=>{let n=activePlayers.filter(p=>has(p.id,f.id)).length;return `<div class="card flower-card-category ${c.key}"><div class="flower flower-category-bg-${c.key}">${flowerVisual(f)}<div class="flower-name">${esc(f.name)}</div></div><p>La tienen <b>${n}</b> jugadora(s).</p></div>`}).join("")}</div>
+   </section>`;
+ }).join("");
+ const uncategorized=arr.filter(f=>!cats.some(c=>normalized(f.category)===c.key));
+ if(uncategorized.length){
+   html+=`<section class="flower-category-section">
+     <div class="flower-category-title">
+       <div class="category-title-main"><span>🌸</span><span>Sin categoría</span></div>
+       <div class="category-title-meta">${uncategorized.length} flores</div>
+     </div>
+     <div class="grid">${uncategorized.map(f=>{let n=activePlayers.filter(p=>has(p.id,f.id)).length;return `<div class="card flower-card-category"><div class="flower flower-category-bg-none">${flowerVisual(f)}<div class="flower-name">${esc(f.name)}</div></div><p>La tienen <b>${n}</b> jugadora(s).</p></div>`}).join("")}</div>
+   </section>`;
+ }
+ $("#flowercategories").innerHTML=html||`<p class="sub">No hay flores que coincidan con la búsqueda.</p>`;
+}
+window.filterFlowers=()=>{let q=$("#fsearch").value.trim().toLowerCase();drawFlowers(state.flowers.filter(f=>f.active&&(!q||String(f.name||"").toLowerCase().includes(q))))};
+
+function adminPage(){
+ if(!session){$("#app").innerHTML=`<div class="adminbox"><h2>🔐 Administración</h2><p>Solo la administradora puede entrar aquí.</p><input id="email" type="email" placeholder="Correo"><br><br><input id="pass" type="password" placeholder="Contraseña"><br><br><button class="primary" onclick="window.login()">Entrar</button></div>`;return}
+ $("#app").innerHTML=`<div class="notice"><b>🔐 Modo administración</b> — cambios visibles para todas las personas que consulten la página.</div><input id="flowerFile" type="file" accept="image/png,image/jpeg,image/webp" style="display:none">
+ <div class="toolbar"><button class="primary" onclick="window.addPlayer()">+ Jugadora</button><button class="primary" onclick="window.addFlower()">+ Flor</button><button class="primary" onclick="window.editMissions()">🎯 Editar misiones</button><button class="primary" onclick="window.openWeeklyStats()">📊 Estadísticas semanales</button><button class="small" onclick="window.logout()">Cerrar sesión</button></div>
+ <div class="admin-layout"><div class="card admin-players-card"><h3>👩 Jugadoras</h3>${state.players.map(p=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(p.name)}</span><button class="small" onclick="window.editPlayer(${p.id})">Editar colección</button></div>`).join("")}</div>
+ <div class="card admin-flowers-card"><h3>🌻 Flores</h3><p class="sub">Asigna cada flor a una de las 5 categorías para que las estadísticas se calculen correctamente.</p><div class="admin-flower-grid">${state.flowers.map(f=>`<div class="admin-flower-card"><div class="admin-flower-head">${f.image_url?`<img src="${esc(f.image_url)}" alt="" loading="lazy">`:`<span style="width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px dashed #CBB7C8;font-size:26px;flex:0 0 auto">🌸</span>`}<span class="admin-flower-name">${esc(f.name)}</span></div><select onchange="window.setFlowerCategory(${f.id},this.value)"><option value="">Sin categoría</option><option value="roja" ${f.category==="roja"?"selected":""}>🔴 Roja</option><option value="naranja" ${f.category==="naranja"?"selected":""}>🟠 Naranja</option><option value="morada" ${f.category==="morada"?"selected":""}>🟣 Morada</option><option value="azul" ${f.category==="azul"?"selected":""}>🔵 Azul</option><option value="verde" ${f.category==="verde"?"selected":""}>🟢 Verde</option></select><div class="admin-flower-actions"><button class="small" onclick="window.uploadFlowerImage(${f.id})">📷 Foto</button><button class="small" onclick="window.renameFlower(${f.id})">Renombrar</button></div></div>`).join("")}</div></div></div>`;
+}
+window.login=async()=>{let {data,error}=await supabase.auth.signInWithPassword({email:$("#email").value,password:$("#pass").value});if(error)return alert(error.message);session=data.session;setPage("admin")};
+window.logout=async()=>{await supabase.auth.signOut();session=null;setPage("home")};
+window.addPlayer=async()=>{let n=prompt("Nombre de la jugadora:");if(!n)return;let {error}=await supabase.from("players").insert({name:n.trim(),active:true});if(error)alert(error.message);await load()};
+window.addFlower=async()=>{let n=prompt("Nombre de la flor:");if(!n)return;let {error}=await supabase.from("flowers").insert({name:n.trim(),emoji:"🌸",active:true});if(error)alert(error.message);await load()};
+window.editPlayer=async(id)=>{
+ let p=player(id);
+ let flowers=[...state.flowers].sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"es",{sensitivity:"base",numeric:true}));
+ let html=`<button class="close" onclick="closeDlg()">✕</button><h2>🌹 ${esc(p.name)}</h2><p>Marca las flores que tiene. La cantidad no importa.</p><input id="collectionSearch" class="collection-search" type="search" placeholder="🔎 Buscar flor..." oninput="window.filterCollectionFlowers(this.value)"><div class="checks"><div id="collectionGrid" class="collection-grid">${flowers.map(f=>`<label class="collection-flower" data-flower-name="${esc(String(f.name||"").toLowerCase())}"><input type="checkbox" data-f="${f.id}" ${has(id,f.id)?"checked":""}> ${f.image_url?`<img src="${esc(f.image_url)}" alt="" loading="lazy">`:`<span class="collection-emoji">${esc(f.emoji||"🌸")}</span>`}<span class="collection-name">${esc(f.name)}</span></label>`).join("")}</div></div><br><button class="primary" onclick="window.saveCollection(${id})">Guardar colección</button>`;
+ openDlg(html)
+};
+window.filterCollectionFlowers=(query)=>{
+ let q=String(query||"").trim().toLowerCase();
+ document.querySelectorAll("#collectionGrid .collection-flower").forEach(el=>{
+   el.style.display=(!q || (el.dataset.flowerName||"").includes(q))?"flex":"none";
+ });
+};
+window.saveCollection=async(id)=>{
+ let selected=[...document.querySelectorAll("#dlgbody input[data-f]:checked")].map(x=>Number(x.dataset.f));
+ let current=state.owns.filter(x=>x.player_id===id);
+ let del=current.filter(x=>!selected.includes(x.flower_id)).map(x=>x.flower_id), add=selected.filter(fid=>!current.some(x=>x.flower_id===fid));
+ if(del.length){let {error}=await supabase.from("player_flowers").delete().eq("player_id",id).in("flower_id",del);if(error)return alert(error.message)}
+ if(add.length){let {error}=await supabase.from("player_flowers").insert(add.map(fid=>({player_id:id,flower_id:fid})));if(error)return alert(error.message)}
+ closeDlg();await load()
+};
+window.uploadFlowerImage=async(id)=>{
+ const f=flower(id); if(!f)return;
+ const input=$("#flowerFile"); if(!input)return;
+ input.value="";
+ input.onchange=async()=>{
+  const file=input.files?.[0]; if(!file)return;
+  if(file.size>5*1024*1024)return alert("La imagen pesa más de 5 MB. Elige una imagen más pequeña.");
+  const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
+  const path=`flower-${id}-${Date.now()}.${ext}`;
+  const {error:upError}=await supabase.storage.from("flowers").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+  if(upError)return alert("No se pudo subir la foto: "+upError.message);
+  const {data}=supabase.storage.from("flowers").getPublicUrl(path);
+  const {error:dbError}=await supabase.from("flowers").update({image_url:data.publicUrl}).eq("id",id);
+  if(dbError)return alert("La foto se subió, pero no se pudo guardar en la flor: "+dbError.message);
+  await load(); alert("Foto guardada para "+f.name+".");
+ };
+ input.click();
+};
+window.setFlowerCategory=async(id,category)=>{
+ const value=category||null;
+ const {error}=await supabase.from("flowers").update({category:value}).eq("id",id);
+ if(error){alert("No se pudo guardar la categoría: "+error.message);await load();return}
+ await load();
+};
+window.renameFlower=async(id)=>{let f=flower(id),n=prompt("Nuevo nombre:",f.name);if(!n||n===f.name)return;let {error}=await supabase.from("flowers").update({name:n.trim()}).eq("id",id);if(error)alert(error.message);await load()};
+
+function currentWeek(){return state.weeks.find(w=>w.is_current)||state.weeks[0]||null}
+function weekStats(weekId){return state.weeklyStats.filter(x=>Number(x.week_id)===Number(weekId))}
+function calcWeekly(rows){
+ const clean=rows.map(r=>({missions:Number(r.missions_done)||0,points:Number(r.points_done)||0,max:Number(r.max_points)||0}));
+ const totalM=clean.reduce((a,r)=>a+r.missions,0), totalP=clean.reduce((a,r)=>a+r.points,0), totalMax=clean.reduce((a,r)=>a+r.max,0);
+ const avgM=totalM?totalP/totalM:0, obligatory=clean.filter(r=>r.missions>=18).length, maximum=clean.filter(r=>r.missions>=24).length;
+ return {totalM,totalP,totalMax,avgM,obligatory,maximum};
+}
+function fmtNum(n){return Number(n||0).toLocaleString("es-ES",{maximumFractionDigits:1})}
+function weeklyRankEmoji(value){const n=Number(value)||0;return n>=1344?'🔴':n>=1200?'🟠':n>=1008?'🟣':n>=672?'🔵':'🟢'}
+function weeklyHomeHtml(){
+ const w=state.weeks.length?state.weeks[0]:null;
+ if(!w)return `<section class="weekly-hero"><div class="weekly-hero-head"><div><h2>📊 Estadísticas de competición</h2><p>Aún no hay una semana creada. Puedes crearla desde Administración.</p></div></div></section>`;
+ const weekRows=state.weeklyStats.filter(x=>Number(x.week_id)===Number(w.id)&&x.active!==false);
+ const rows=weekRows.map(r=>{const p=state.players.find(x=>Number(x.id)===Number(r.player_id));if(!p)return null;return {...r,player:p,avg:r.missions_done?(Number(r.points_done)||0)/(Number(r.missions_done)||1):0};}).filter(Boolean);
+ const c=calcWeekly(rows);
+ const groupPct=c.totalMax?Math.min(100,c.totalP/c.totalMax*100):0;
+ const totalMissionsLeft=rows.reduce((sum,r)=>sum+Math.max(0,24-(Number(r.missions_done)||0)),0);
+ const totalPotentialPoints=rows.reduce((sum,r)=>{
+   const missions=Number(r.missions_done)||0,max=Number(r.max_points)||0,remaining=Math.max(0,24-missions);
+   return sum+(remaining*(max/24));
+ },0);
+ const playerEmojis=["🌸","🌷","🌺","🌻","🌼","🌹","🪻","💐","🌱","🍀","🌿","🌼","🌸","🌷","🌺"];
+ const table=rows.slice().sort((a,b)=>(Number(b.max_points)||0)-(Number(a.max_points)||0)).map((r)=>{
+   const cls=Number(r.missions_done)>=24?'maximum':Number(r.missions_done)>=18?'obligatory':'';
+   return `<tr><td class="player-cell">${weeklyRankEmoji(r.max_points)} ${esc(r.player.name)}</td><td><span class="mission-count-badge ${cls}">${Number(r.missions_done)||0}</span></td><td>${fmtNum(r.points_done)}</td><td>${fmtNum(r.max_points)}</td><td>${r.avg?fmtNum(r.avg):'—'}</td></tr>`;
+ }).join('');
+ const bars=rows.slice().sort((a,b)=>{
+   const pctA=Number(a.max_points)?Math.min(100,(Number(a.points_done)||0)/Number(a.max_points)*100):0;
+   const pctB=Number(b.max_points)?Math.min(100,(Number(b.points_done)||0)/Number(b.max_points)*100):0;
+   if(pctA!==pctB)return pctA-pctB;
+   return (Number(a.missions_done)||0)-(Number(b.missions_done)||0);
+ }).map((r,i)=>{
+   const pct=Number(r.max_points)?Math.min(100,(Number(r.points_done)||0)/Number(r.max_points)*100):0;
+   const missions=Number(r.missions_done)||0,cls=missions>=24?'complete':missions>=18?'obligatory':'';
+   const emoji=playerEmojis[i%playerEmojis.length];
+   return `<div class="history-card ${cls}"><div class="history-card-head"><b class="player-cell">${emoji} ${esc(r.player.name)}</b><span class="history-percent">${fmtNum(pct)}%</span></div><div class="history-bar"><span style="width:${pct}%"></span></div><div class="sub">${fmtNum(r.points_done)} / ${fmtNum(r.max_points)} pts<br>${missions}/24 misiones · promedio ${r.avg?fmtNum(r.avg):'—'} pts</div></div>`;
+ }).join('');
+ return `<section class="weekly-hero">
+ <div class="weekly-hero-head"><div><h2>📊 ${esc(w.name||'Competición semanal')}</h2><p>${esc(w.start_date||'')} → ${esc(w.end_date||'')}</p></div><button class="small" onclick="window.openWeeklyStats()">⚙️ Editar datos</button></div>
+ <div class="group-performance">
+  <div class="group-performance-head"><div><h2>🏆 Rendimiento grupal</h2><p>Resumen rápido de la última competencia semanal.</p></div>${w.team_position?`<span class="team-position">🏅 Posición del equipo <b>#${esc(w.team_position)}</b></span>`:''}</div>
+  <div class="group-kpis">
+   <div class="group-kpi"><b>${fmtNum(groupPct)}%</b><span>Rendimiento grupal</span></div>
+   <div class="group-kpi"><b>${fmtNum(c.totalP)}</b><span>Puntos hechos</span></div>
+   <div class="group-kpi"><b>${fmtNum(c.totalMax)}</b><span>Puntos máximos</span></div>
+   <div class="group-kpi"><b>${c.totalM}</b><span>Misiones hechas</span></div>
+  </div>
+ </div>
+ <div class="weekly-table-wrap" style="margin-top:14px"><table class="weekly-table"><thead><tr><th>Jugadora</th><th>Misiones</th><th>Puntos hechos</th><th>Puntos máximos</th><th>Promedio / misión</th></tr></thead><tbody>${table}</tbody></table></div>
+ <div class="history-section"><h3>📈 Rendimiento de la semana por participante</h3><p class="sub">Ordenadas desde la que tiene mayor porcentaje pendiente hasta las que ya llegaron al 100%.</p><div class="weekly-potential"><span class="weekly-pill missions-left">⏳ <b>${totalMissionsLeft}</b> misiones por hacer</span><span class="weekly-pill">⭐ <b>${fmtNum(totalPotentialPoints)}</b> puntos potenciales de las misiones restantes</span></div><div class="history-grid">${bars}</div></div>
+ </section>`;
+}
+function weeklyStatsPage(){
+ if(!session){adminPage();return}
+ const w=currentWeek();
+ const options=state.weeks.map(x=>`<option value="${x.id}" ${w&&Number(w.id)===Number(x.id)?'selected':''}>${esc(x.name)} · ${esc(x.start_date||'')}</option>`).join('');
+ const participants=w?state.players.filter(p=>p.active).slice().sort((a,b)=>{
+   const ra=state.weeklyStats.find(x=>Number(x.week_id)===Number(w.id)&&Number(x.player_id)===Number(a.id));
+   const rb=state.weeklyStats.find(x=>Number(x.week_id)===Number(w.id)&&Number(x.player_id)===Number(b.id));
+   return (Number(rb?.max_points)||0)-(Number(ra?.max_points)||0);
+ }):[];
+ const rows=w?participants.map(p=>{
+   const r=state.weeklyStats.find(x=>Number(x.week_id)===Number(w.id)&&Number(x.player_id)===Number(p.id))||{missions_done:0,points_done:0,max_points:0,active:true};
+   const active=r.active!==false;
+   return `<tr class="${active?'':'weekly-row-inactive'}"><td><span class="weekly-rank">${weeklyRankEmoji(r.max_points)}</span> ${esc(p.name)}</td><td><label class="switch"><input type="checkbox" data-player="${p.id}" data-field="active" ${active?'checked':''}><span class="slider"></span></label></td><td><input class="stat-input" type="number" min="0" max="24" data-player="${p.id}" data-field="missions_done" value="${Number(r.missions_done)||0}"></td><td><input class="stat-input" type="number" min="0" data-player="${p.id}" data-field="points_done" value="${Number(r.points_done)||0}"></td><td><input class="stat-input" type="number" min="0" data-player="${p.id}" data-field="max_points" value="${Number(r.max_points)||0}"></td><td>${Number(r.missions_done)?fmtNum((Number(r.points_done)||0)/(Number(r.missions_done)||1)):'—'}</td></tr>`;
+ }).join(''):'<tr><td colspan="6">Crea tu primera semana para comenzar.</td></tr>';
+ $("#app").innerHTML=`<div class="card"><div class="weekly-admin-actions"><h2 style="margin:0;flex:1">📊 Estadísticas semanales</h2><button class="primary" onclick="window.createWeeklyCompetition()">+ Nueva semana</button><button class="small" onclick="window.backToAdmin()">← Administración</button></div><div class="weekly-admin-actions">${state.weeks.length?`<select class="week-selector" onchange="window.selectWeeklyWeek(this.value)">${options}</select><button class="small" onclick="window.modifyWeeklyCompetition(${w.id})">✏️ Modificar competencia</button><button class="small" onclick="window.deleteWeeklyCompetition(${w.id})" style="color:#B84A4A;border-color:#E7C2C2">🗑️ Eliminar</button>`:'<span class="sub">No hay semanas creadas todavía.</span>'}</div>${w?`<div class="weekly-admin-actions"><label style="font-size:12px;font-weight:800;color:var(--muted)">🏆 Posición del equipo <input id="teamPosition" class="stat-input" type="number" min="1" placeholder="Ej. 7" value="${w.team_position??''}" style="width:90px"></label></div><p class="sub">Activa o desactiva la participación de cada jugadora en esta competencia. Las inactivas no cuentan en los resultados públicos. Los datos de las misiones no se modifican.</p><div class="weekly-table-wrap"><table class="weekly-table weekly-admin-table"><thead><tr><th>Jugadora</th><th>Participa</th><th>Misiones hechas</th><th>Puntos hechos</th><th>Puntos máximos</th><th>Promedio</th></tr></thead><tbody>${rows}</tbody></table></div><br><button class="primary" onclick="window.saveWeeklyStats(${w.id})">💾 Guardar estadísticas de esta semana</button>`:''}</div>`;
+}
+window.openWeeklyStats=()=>{page='weeklyStats';render()};
+window.selectWeeklyWeek=(id)=>{state.weeks.forEach(x=>x.is_current=Number(x.id)===Number(id));page='weeklyStats';render()};
+window.modifyWeeklyCompetition=async(weekId)=>{
+ const w=state.weeks.find(x=>Number(x.id)===Number(weekId)); if(!w)return;
+ const name=prompt('Nombre de la competencia:',w.name||''); if(name===null)return;
+ const start=prompt('Fecha de inicio (AAAA-MM-DD):',w.start_date||''); if(start===null)return;
+ const end=prompt('Fecha de fin (AAAA-MM-DD):',w.end_date||''); if(end===null)return;
+ const {error}=await supabase.from('competition_weeks').update({name:name.trim(),start_date:start.trim(),end_date:end.trim()}).eq('id',weekId);
+ if(error)return alert('No se pudo modificar la competencia: '+error.message);
+ await load(); page='weeklyStats'; render(); alert('Competencia modificada.');
+};
+window.deleteWeeklyCompetition=async(weekId)=>{
+ const w=state.weeks.find(x=>Number(x.id)===Number(weekId)); if(!w)return;
+ const ok=confirm(`¿Eliminar definitivamente “${w.name||'esta competencia'}”?\n\nSe borrarán sus estadísticas y dejará de aparecer en el historial. Esta acción no se puede deshacer.`); if(!ok)return;
+ const {error:statsError}=await supabase.from('weekly_player_stats').delete().eq('week_id',weekId);
+ if(statsError)return alert('No se pudieron borrar las estadísticas: '+statsError.message);
+ const {error:weekError}=await supabase.from('competition_weeks').delete().eq('id',weekId);
+ if(weekError)return alert('Se borraron las estadísticas, pero no se pudo eliminar la competencia: '+weekError.message);
+ await load(); page='weeklyStats'; render(); alert('Competencia eliminada.');
+};
+window.createWeeklyCompetition=async()=>{
+ const name=prompt('Nombre de la nueva semana/competencia:','Semana '+(state.weeks.length+1)); if(!name)return;
+ const start=prompt('Fecha de inicio (AAAA-MM-DD):',new Date().toISOString().slice(0,10)); if(!start)return;
+ const end=prompt('Fecha de fin (AAAA-MM-DD):',start); if(!end)return;
+ await supabase.from('competition_weeks').update({is_current:false}).eq('is_current',true);
+ const {data,error}=await supabase.from('competition_weeks').insert({name:name.trim(),start_date:start,end_date:end,is_current:true}).select().single();
+ if(error)return alert('No se pudo crear la semana: '+error.message);
+ const previous=state.weeks[0]; const prevStats=previous?weekStats(previous.id):[];
+ const rows=state.players.filter(p=>p.active).map(p=>{const old=prevStats.find(r=>Number(r.player_id)===Number(p.id));return {week_id:data.id,player_id:p.id,missions_done:0,points_done:0,max_points:Number(old?.max_points)||0,active:true}});
+ if(rows.length){const {error:e}=await supabase.from('weekly_player_stats').insert(rows);if(e)return alert('La semana se creó, pero no se pudieron preparar las jugadoras: '+e.message)}
+ await load(); page='weeklyStats';render();
+};
+window.saveWeeklyStats=async(weekId)=>{
+ const teamPosition=Math.max(0,Number(document.querySelector('#teamPosition')?.value)||0);
+ const {error:weekError}=await supabase.from('competition_weeks').update({team_position:teamPosition||null}).eq('id',weekId);
+ if(weekError)return alert('No se pudo guardar la posición del equipo: '+weekError.message);
+ const ids=[...new Set([...document.querySelectorAll('[data-player]')].map(el=>Number(el.dataset.player)).filter(Boolean))];
+ const rows=ids.map(playerId=>{
+   const vals={};
+   document.querySelectorAll(`[data-player="${playerId}"]`).forEach(el=>{
+     if(el.dataset.field==='active') vals.active=el.checked;
+     else vals[el.dataset.field]=Number(el.value)||0;
+   });
+   return {week_id:weekId,player_id:playerId,missions_done:Math.min(24,Math.max(0,vals.missions_done||0)),points_done:Math.max(0,vals.points_done||0),max_points:Math.max(0,vals.max_points||0),active:vals.active!==false};
+ });
+ const {error}=await supabase.from('weekly_player_stats').upsert(rows,{onConflict:'week_id,player_id'});
+ if(error)return alert('No se pudieron guardar las estadísticas: '+error.message);
+ await load(); page='weeklyStats';render(); alert('Estadísticas guardadas.');
+};
+window.editMissions=()=>{
+  page="missionEditor";
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  render();
+};
+
+function missionEditor(){
+  const missions=[...state.missions].sort((a,b)=>a.slot_number-b.slot_number);
+  $("#app").innerHTML=`<section class="mission-editor-board">
+    <div class="mission-editor-head">
+      <div><h2 style="margin:0">🎯 Tablero de misiones</h2><p>Haz clic en una misión para elegir su flor. El estado se cambia con una casilla.</p></div>
+      <button class="small" onclick="window.backToAdmin()">← Volver a Administración</button>
+    </div>
+    <div id="missionBoardGrid" class="mission-board-grid">${missions.map(missionEditCard).join("")}</div>
+    <div class="mission-save-bar"><span id="missionSaveInfo">Los cambios se guardan al pulsar “Guardar misiones”.</span><button class="primary" onclick="window.saveMissionBoard()">💾 Guardar misiones</button></div>
+  </section>`;
+};
+
+function missionEditCard(m){
+  const f=flower(m.flower_id);
+  const isInProgress=m.status==="in_progress";
+  return `<div class="mission-edit-card" id="missionEditCard-${m.slot_number}" onclick="window.toggleMissionPicker(${m.slot_number})">
+    <div class="mission-edit-slot"><b>#${m.slot_number}</b>${f?`<span style="font-size:10px">🌸</span>`:`<span style="font-size:10px">—</span>`}</div>
+    <div class="mission-edit-flower">
+      ${f?.image_url?`<img src="${esc(f.image_url)}" alt="" loading="lazy">`:f?`<div class="mission-no-flower">${esc(f.emoji||"🌸")}</div>`:`<div class="mission-no-flower">＋</div>`}
+      <div class="mission-edit-name">${esc(f?.name||"Elegir flor")}</div>
+    </div>
+    <div class="mission-state-options" onclick="event.stopPropagation()">
+      <label class="mission-state-option available"><input type="radio" name="mission-state-${m.slot_number}" value="active" ${!isInProgress?"checked":""} onchange="window.markMissionDirty(${m.slot_number})"> Disponible</label>
+      <label class="mission-state-option inprogress"><input type="radio" name="mission-state-${m.slot_number}" value="in_progress" ${isInProgress?"checked":""} onchange="window.markMissionDirty(${m.slot_number})"> En curso</label>
+    </div>
+    <div class="mission-flower-picker" onclick="event.stopPropagation()">
+      <input class="mission-flower-search" placeholder="🔎 Buscar flor..." oninput="window.filterMissionFlowers(${m.slot_number},this.value)" onclick="event.stopPropagation()">
+      <div class="mission-flower-options" id="missionFlowerOptions-${m.slot_number}">
+        ${missionFlowerOptions(m)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function missionFlowerOptions(m,query=""){
+  const q=String(query||"").trim().toLowerCase();
+  return [...state.flowers].sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"es",{sensitivity:"base",numeric:true}))
+    .filter(f=>!q||String(f.name||"").toLowerCase().includes(q))
+    .map(f=>`<button type="button" class="mission-flower-option ${Number(m.flower_id)===Number(f.id)?"selected":""}" data-slot="${m.slot_number}" data-flower-id="${f.id}" onclick="window.chooseMissionFlower(event,${m.slot_number},${f.id})">
+      ${f.image_url?`<img src="${esc(f.image_url)}" alt="" loading="lazy">`:`<span class="mission-flower-emoji">${esc(f.emoji||"🌸")}</span>`}
+      <span>${esc(f.name)}</span>
+    </button>`).join("");
+}
+
+window.toggleMissionPicker=(slot)=>{
+  const card=$(`#missionEditCard-${slot}`);
+  if(!card)return;
+  document.querySelectorAll(".mission-edit-card.selected").forEach(x=>{if(x!==card)x.classList.remove("selected")});
+  card.classList.toggle("selected");
+  if(card.classList.contains("selected")){
+    const input=card.querySelector(".mission-flower-search");
+    if(input){input.value="";setTimeout(()=>input.focus(),0)}
+  }
+};
+
+window.filterMissionFlowers=(slot,query)=>{
+  const m=state.missions.find(x=>x.slot_number===slot);
+  const box=$(`#missionFlowerOptions-${slot}`);
+  if(box&&m)box.innerHTML=missionFlowerOptions(m,query);
+};
+
+window.chooseMissionFlower=(event,slot,fid)=>{
+  event.preventDefault();event.stopPropagation();
+  const m=state.missions.find(x=>x.slot_number===slot);
+  if(!m)return;
+  m.flower_id=Number(fid);
+  m.__dirty=true;
+  const card=$(`#missionEditCard-${slot}`);
+  if(card){
+    const f=flower(fid);
+    const visual=card.querySelector(".mission-edit-flower");
+    if(visual)visual.innerHTML=`${f?.image_url?`<img src="${esc(f.image_url)}" alt="" loading="lazy">`:`<div class="mission-no-flower">${esc(f?.emoji||"🌸")}</div>`}<div class="mission-edit-name">${esc(f?.name||"Elegir flor")}</div>`;
+    card.querySelectorAll(".mission-flower-option").forEach(x=>x.classList.toggle("selected",Number(x.dataset.flowerId)===Number(fid)));
+  }
+  markMissionDirty(slot);
+};
+
+window.markMissionDirty=(slot)=>{
+  const m=state.missions.find(x=>x.slot_number===slot);
+  if(m)m.__dirty=true;
+  const info=$("#missionSaveInfo");
+  if(info)info.textContent="Hay cambios sin guardar.";
+};
+
+window.saveMissionBoard=async()=>{
+  const dirty=state.missions.filter(m=>m.__dirty);
+  if(!dirty.length){alert("No hay cambios para guardar.");return}
+  const info=$("#missionSaveInfo");
+  if(info)info.textContent="Guardando…";
+  for(const m of dirty){
+    const radio=document.querySelector(`input[name="mission-state-${m.slot_number}"]:checked`);
+    const status=radio?.value==="in_progress"?"in_progress":"active";
+    const patch={
+      flower_id:m.flower_id?Number(m.flower_id):null,
+      status,
+      points:0,
+      waiting_started_at:null,
+      replacement_at:null,
+      completed_by:null,
+      completed_at:null
+    };
+    const {error}=await supabase.from("missions").update(patch).eq("slot_number",m.slot_number);
+    if(error){alert(`No se pudo guardar la misión #${m.slot_number}: ${error.message}`);if(info)info.textContent="Revisa los cambios y vuelve a intentarlo.";return}
+  }
+  await load();
+  page="missionEditor";
+  render();
+  const newInfo=$("#missionSaveInfo");
+  if(newInfo)newInfo.textContent="✓ Todas las misiones guardadas.";
+};
+
+window.backToAdmin=()=>setPage("admin");
+
+function openDlg(x){$("#dlgbody").innerHTML=x;$("#dlg").showModal()}function closeDlg(){$("#dlg").close()}window.closeDlg=closeDlg;
+window.go=setPage;
+supabase?.auth.getSession().then(({data})=>{session=data.session;load()});
+if(supabase){supabase.channel("cozy-live").on("postgres_changes",{event:"*",schema:"public",table:"players"},load).on("postgres_changes",{event:"*",schema:"public",table:"flowers"},load).on("postgres_changes",{event:"*",schema:"public",table:"player_flowers"},load).on("postgres_changes",{event:"*",schema:"public",table:"missions"},load).subscribe()}
+setInterval(()=>{if(page==="missions")drawMissions(state.missions)},1000);
+</script>
+</body>
+</html>
