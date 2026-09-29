@@ -248,7 +248,6 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = "https://dykvyixivccgzwzvghyx.supabase.co";
 const SUPABASE_KEY = "sb_publishable_IvegPNXIuaQhi43TbS8AWQ_PwH5SD9G";
 
-
 const configured = !SUPABASE_URL.startsWith("PEGA_AQUI") && !SUPABASE_KEY.startsWith("PEGA_AQUI");
 const supabase = configured ? createClient(SUPABASE_URL,SUPABASE_KEY) : null;
 let page="home", state={players:[],flowers:[],owns:[],missions:[],weeks:[],weeklyStats:[]}, session=null;
