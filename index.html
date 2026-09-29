@@ -303,16 +303,16 @@ function home(){
    return `<div class="category-card ${c.cls}"><div class="category-ring" style="--progress:${cp*3.6}deg"><div class="category-value">${cp}%</div></div><div class="category-name">${c.icon} ${c.name}</div><div class="category-count">${got}/${fs.length}</div></div>`;
  }).join("");
  const uncategorized=activeFlowers.filter(f=>!f.category).length;
- $("#app").innerHTML=`<div class="card"><h2>🌸 Bienvenidas al gremio</h2><p>Resumen de la última competencia semanal, rendimiento de cada jugadora y progreso de la colección.</p></div>
+ $("#app").innerHTML=`<div class="card"><h2>🖤🌻 Bienvenidas al gremio</h2><p>Resumen de la última competencia semanal, rendimiento de cada jugadora y progreso de la colección.</p></div>
  ${weeklyHomeHtml()}
  <section class="collection-box">
-  <div class="collection-head"><span>🌷 Progreso de colección</span><span>${owned}/${total} (${pct}%)</span></div>
+  <div class="collection-head"><span>📒 Progreso de colección</span><span>${owned}/${total} (${pct}%)</span></div>
   <div class="progress-wrap"><div class="progress-ring" style="--progress:${pct*3.6}deg"><div class="progress-value"><b>${pct}%</b><small>Progreso general</small></div></div></div>
   <div class="stats">
-   <div class="stat"><div class="stat-icon">🌸</div><b>${activePlayers.length}</b><span>Jugadoras</span></div>
+   <div class="stat"><div class="stat-icon">🐭</div><b>${activePlayers.length}</b><span>Jugadoras</span></div>
    <div class="stat"><div class="stat-icon">🌼</div><b>${total}</b><span>Tipos de flores</span></div>
    <div class="stat"><div class="stat-icon">🌺</div><b>${owned}</b><span>Flores del gremio</span></div>
-   <div class="stat"><div class="stat-icon">🍃</div><b>${missing}</b><span>Faltan</span></div>
+   <div class="stat"><div class="stat-icon">⚔️</div><b>${missing}</b><span>Faltan</span></div>
   </div>
   <div class="category-grid">${catHtml}</div>
   ${uncategorized?`<div class="uncategorized-note">ℹ️ Hay ${uncategorized} flor(es) sin categoría. Asígnales una categoría desde Administración.</div>`:""}
@@ -325,7 +325,7 @@ function playersPage(){
 }
 function drawPlayers(arr){
  $("#playergrid").innerHTML=arr.filter(p=>p.active).map(p=>{let fs=state.flowers.filter(f=>f.active&&has(p.id,f.id));let can=state.missions.filter(m=>(m.status==="active"||m.status==="in_progress")&&m.flower_id&&has(p.id,m.flower_id)).length;
- const playerFlowerEmojis=["🌷","🌸","🌺","🌻","🌼","🌹","🪻","💐","🌱","🍀"];
+ const playerFlowerEmojis=["🌷","🖤","🩷","🌻","🌼",💜","💚","🧡","💛","❤️","🩵","💙","🤍","🌹","🪻","💐","🌱","🍀"];
  const flowerEmoji=playerFlowerEmojis[p.id%playerFlowerEmojis.length];
  return `<div class="card"><div class="player-head"><h3 class="player-name">${flowerEmoji} ${esc(p.name)}</h3><span class="player-mission-badge"><b>${can}</b> misión(es) disponibles</span></div><p class="sub">${fs.length} flores en colección</p><div class="flower-grid player-flower-grid">${fs.map(f=>`<div class="flower">${flowerVisual(f)}<div class="flower-name">${esc(f.name)}</div></div>`).join("")||"<p>Sin flores registradas.</p>"}</div></div>`}).join("");
 }
