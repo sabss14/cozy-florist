@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f6d7e5">
-<title>Cozy Florist — Gremio</title>
+<title>🐭⚔️Cozy Florist</title>
 <style>
 :root{--bg:#FAF7F5;--panel:#FFFFFF;--ink:#4A4450;--muted:#7B737C;--accent:#B8899E;--accent2:#D8C7E8;--line:#E9DFE5;--ok:#A9C7B0;--wait:#B9AEB7}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#ffffff,#FFF8F0);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
@@ -262,8 +262,8 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
    PEGA AQUÍ TUS DOS DATOS DE SUPABASE.
    NO pongas aquí la secret/service_role key.
    ========================================================= */
-const SUPABASE_URL = "PRIVADO";
-const SUPABASE_KEY = "PRIVADO";
+const SUPABASE_URL = "https://dykvyixivccgzwzvghyx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_IvegPNXIuaQhi43TbS8AWQ_PwH5SD9G";
 
 const configured = !SUPABASE_URL.startsWith("PEGA_AQUI") && !SUPABASE_KEY.startsWith("PEGA_AQUI");
 const supabase = configured ? createClient(SUPABASE_URL,SUPABASE_KEY) : null;
@@ -332,16 +332,16 @@ function home(){
    return `<div class="category-card ${c.cls}"><div class="category-ring" style="--progress:${cp*3.6}deg"><div class="category-value">${cp}%</div></div><div class="category-name">${c.icon} ${c.name}</div><div class="category-count">${got}/${fs.length}</div></div>`;
  }).join("");
  const uncategorized=activeFlowers.filter(f=>!f.category).length;
- $("#app").innerHTML=`<div class="card"><h2>🌸 Bienvenidas al gremio</h2><p>Resumen de la última competencia semanal, rendimiento de cada jugadora y progreso de la colección.</p></div>
+ $("#app").innerHTML=`<div class="card"><h2>🖤🌻 Bienvenidas al gremio</h2><p>Resumen de la última competencia semanal, rendimiento de cada jugadora y progreso de la colección.</p></div>
  ${weeklyHomeHtml()}
  <section class="collection-box">
-  <div class="collection-head"><span>🌷 Progreso de colección</span><span>${owned}/${total} (${pct}%)</span></div>
+  <div class="collection-head"><span>📒 Progreso de colección</span><span>${owned}/${total} (${pct}%)</span></div>
   <div class="progress-wrap"><div class="progress-ring" style="--progress:${pct*3.6}deg"><div class="progress-value"><b>${pct}%</b><small>Progreso general</small></div></div></div>
   <div class="stats">
-   <div class="stat"><div class="stat-icon">🌸</div><b>${activePlayers.length}</b><span>Jugadoras</span></div>
+   <div class="stat"><div class="stat-icon">🦄</div><b>${activePlayers.length}</b><span>Jugadoras</span></div>
    <div class="stat"><div class="stat-icon">🌼</div><b>${total}</b><span>Tipos de flores</span></div>
-   <div class="stat"><div class="stat-icon">🌺</div><b>${owned}</b><span>Flores del gremio</span></div>
-   <div class="stat"><div class="stat-icon">🍃</div><b>${missing}</b><span>Faltan</span></div>
+   <div class="stat"><div class="stat-icon">🌻</div><b>${owned}</b><span>Flores del gremio</span></div>
+   <div class="stat"><div class="stat-icon">💔</div><b>${missing}</b><span>Faltan</span></div>
   </div>
   <div class="category-grid">${catHtml}</div>
   ${uncategorized?`<div class="uncategorized-note">ℹ️ Hay ${uncategorized} flor(es) sin categoría. Asígnales una categoría desde Administración.</div>`:""}
